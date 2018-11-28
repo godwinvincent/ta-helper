@@ -15,7 +15,7 @@ The goal of this project is to improve the efficiency of office hours that teach
 ### Environment
 This application will be deployed via Docker containers on AWS. We will be utilizing GoLang for the API gateway and microservices, as well as Redis, MongoDB, and RabbitMQ to support the application. These can be seen below (a black box denotes a **container**:
 
-![Architecture Diagram](Architecture.png)
+![Architecture Diagram](./images/Architecture.png)
 ### User Stories 
 | No | Priority |  User | Description
 |--|--|--|--|
@@ -45,3 +45,9 @@ This application will be deployed via Docker containers on AWS. We will be utili
 |10|This will be done via **WebSockets**|
 |14|This will be a page served via the **React** Front End|
 |16|This will require a **React** front end and **REST API** request. The message will be broadcasted via **WebSockets** to all other users|
+
+### Mongo DB Schemas
+**User**
+![Architecture Diagram](./images/user_schema.png)
+**Question**
+![Architecture Diagram](./images/question_schema.png)
