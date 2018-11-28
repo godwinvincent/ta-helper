@@ -46,7 +46,7 @@ This application will be deployed via Docker containers on AWS. We will be utili
 |14|This will be a page served via the **React** Front End|
 |16|This will require a **React** front end and **REST API** request. The message will be broadcasted via **WebSockets** to all other users|
 
-### Mongo DB Schemas
+### Appendix: Mongo DB Schemas
 **User**
 ![Architecture Diagram](./images/user_schema.png)
 **Question**
