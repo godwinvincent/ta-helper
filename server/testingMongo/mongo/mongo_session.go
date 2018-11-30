@@ -1,5 +1,13 @@
 package mongo
 
+/**
+ * Hi, welcome to Ben's mongo interface code.
+ * If you want to work with a mongo DB you need to:
+ * 1) make a db connection
+ * 2) make a collection struc
+ * 3) use that collection struc to call a function.
+ */
+
 import (
 	"fmt"
 
