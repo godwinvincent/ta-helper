@@ -31,7 +31,8 @@ func main() {
 	// 	os.Exit(1)
 	// }
 	if len(addr) == 0 {
-		addr = ":443"
+		// addr = ":443"
+		addr = ":80"
 	}
 	redisdb := redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
@@ -39,12 +40,7 @@ func main() {
 		DB:       0,  // use default DB
 	})
 
-	ctx := handlers.Context{
-		SigningKey:   sessionKey,
-		SessionStore: sessions.NewRedisStore(redisdb, time.Hour),
-		// UserStore:         users.NewMySQLStore(db),
-		// NotificationStore: handlers.NewNotifier(),
-	}
+	
 	sr := &handlers.ServiceRegistry{
 		Registry: make(map[string]*handlers.ServiceInfo),
 		Redis:    redisdb,
@@ -58,6 +54,34 @@ func main() {
 			sr.Mx.Unlock()
 		}
 	}()
+
+
+
+	// ------------- Mongo -------------
+	mongoDBName := "bens_db"
+
+	fmt.Println("Beginning...")
+	MongoConnection, err := mongo.NewSession("localhost:27017")
+	if err != nil {
+		log.Fatalf("Failed to connecto to Mongo DB: %v \n", err)
+	}
+	fmt.Println("Successfully connected to Mongo!")
+
+	ctx := handlers.Context{
+		SigningKey:   sessionKey,
+		SessionStore: sessions.NewRedisStore(redisdb, time.Hour),
+		// UserStore:         users.NewMySQLStore(db),
+		// NotificationStore: handlers.NewNotifier(),
+		MongoConnection
+	}
+
+	// Context
+	// ctx := models.Context{MongoConnection}
+	// get users collection
+	usersCollections := ctx.MongoConnection.GetCollection(mongoDBName, "users")
+
+
+
 
 	mux := http.NewServeMux()
 	mux.Handle("/v1/", ctx.ServiceDiscovery(sr))
