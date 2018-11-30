@@ -65,9 +65,6 @@ func (col *MongoCollection) InsertInCollection(user *UserModel) error {
 	return col.collection.Insert(user)
 }
 
-/**
- *
- */
 func (col *MongoCollection) GetByUsername(username string) (*UserModel, error) {
 	model := UserModel{}
 	err := col.collection.Find(bson.M{"username": username}).One(&model)

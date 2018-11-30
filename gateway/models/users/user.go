@@ -19,15 +19,15 @@ var bcryptCost = 13
 
 //User represents a user account in the database
 type User struct {
-	ID          int64  `json:"id"`
-	Email       string `json:"-"` //never JSON encoded/decoded
-	PassHash    []byte `json:"-"` //never JSON encoded/decoded
-	UserName    string `json:"userName"`
-	FirstName   string `json:"firstName"`
-	LastName    string `json:"lastName"`
-	PhotoURL    string `json:"photoURL"`
-	TwoFA       bool   `json:"-"` //never JSON encoded/decoded
-	TwoFaStruct []byte `json:"-"` //never JSON encoded/decoded
+	// ID          int64  `json:"id"`
+	Email     string `json:"email" bson:"email"`
+	PassHash  []byte `json:"-" bson:"passHash"` //never JSON encoded/decoded
+	UserName  string `json:"username" bson:"username"`
+	FirstName string `json:"firstName" bson:"firstName"`
+	LastName  string `json:"lastName" bson:"lastName"`
+
+	EmailActivated bool `json:"-" bson:"emailActivated"` //never JSON encoded/decoded
+
 }
 
 //Credentials represents user sign-in credentials

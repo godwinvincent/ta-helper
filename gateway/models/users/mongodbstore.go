@@ -1,41 +1,94 @@
 package users
 
-//MySQLStore represents a store
-type MongoStore struct {
-	// Client monogdb
+/**
+ * Hi, welcome to Ben's mongo interface code.
+ * If you want to work with a mongo DB you need to:
+ * 1) make a db connection
+ * 2) make a collection struc
+ * 3) use that collection struc to call a function.
+ */
+
+import (
+	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+)
+
+// -------------  Strucs -------------
+
+type MongoSession struct {
+	session *mgo.Session
 }
 
-//NewMySQLStore constructs a new MySQLStore.
-func CreateMongoStore() {
-	// return &MongoStore{}
+type MongoCollection struct {
+	collection *mgo.Collection
 }
 
-//GetByID returns the User with the given ID
-func (s *MongoStore) GetByID(id int64) (*User, error) {
-	return &User{}, nil
+// ------------- Strucs -------------
+
+/**
+ * NewSession creates a new connection to the Mongo Database
+ * and returns it as a *MongoSession.
+ */
+func NewSession(url string) (*MongoSession, error) {
+	// Use the URL to make a connection to that URL
+	session, err := mgo.Dial(url)
+	if err != nil {
+		return nil, err
+	}
+
+	return &MongoSession{session}, err
 }
 
-//GetByEmail returns the User with the given email
-func (s *MongoStore) GetByEmail(email string) (*User, error) {
-	return &User{}, nil
+//GetCollection returns a Collection session.
+//It takes in name of the DB and name of a collection in that
+//Mongo DB.
+func (s *MongoSession) GetCollection(dbName string, collectionName string) *MongoCollection {
+	tempCollection := MongoCollection{s.session.DB(dbName).C(collectionName)}
+	return &tempCollection
 }
 
-//GetByUserName returns the User with the given Username
-func (s *MongoStore) GetByUserName(username string) (*User, error) {
-	return &User{}, nil
+// ------------- Collections -------------
+
+// InsertUser inserts a User into the given Collection
+func (col *MongoCollection) InsertUser(user *User) error {
+	return col.collection.Insert(user)
 }
 
-//Insert inserts the user into the database, and returns
-//the newly-inserted User, complete with the DBMS-assigned ID
-func (s *MongoStore) Insert(user *User) (*User, error) {
-	return &User{}, nil
+// GetByUserName retrives a user from the given collection and returns it as a User
+func (col *MongoCollection) GetByUserName(username string) (*User, error) {
+	model := User{}
+	err := col.collection.Find(bson.M{"username": username}).One(&model)
+	return &model, err
 }
 
-//Update applies UserUpdates to the given user ID
-//and returns the newly-updated user
-func (s *MongoStore) Update(id int64, updates *Updates) (*User, error) {
-	return &User{}, nil
+func (col *MongoCollection) GetByEmail(email string) (*User, error) {
+	model := User{}
+	err := col.collection.Find(bson.M{"email": email}).One(&model)
+	return &model, err
 }
+
+func (col *MongoCollection) GetByID(id string) (*User, error) {
+	model := User{}
+	err := col.collection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&model)
+	return &model, err
+}
+
+// Delete
+func (col *MongoCollection) Delete(id string) error {
+	err := collection.Remove(bson.M{"_id": id})
+	return err
+}
+
+// func (col *MongoCollection) Update(id string, newUser *User) error {
+
+// 	err := col.collection.UpdateId(obj1.Id, bson.M{"$set": &obj1})
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
+
+// ------------- Default Methods -------------
 
 //Delete deletes the user with the given ID
 func (s *MongoStore) Delete(id int64) error {
