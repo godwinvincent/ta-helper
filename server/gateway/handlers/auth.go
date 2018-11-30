@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Patrick-Old/Office-Hour-Helper/models/users"
-	"github.com/Patrick-Old/Office-Hour-Helper/sessions"
+	"github.com/alabama/final-project-alabama/server/gateway/models/users"
+	"github.com/alabama/final-project-alabama/server/gateway/sessions"
 )
 
 //UsersHandler handles users

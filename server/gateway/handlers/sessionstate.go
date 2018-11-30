@@ -3,7 +3,7 @@ package handlers
 import (
 	"time"
 
-	"github.com/Patrick-Old/Office-Hour-Helper/models/users"
+	"github.com/alabama/final-project-alabama/server/gateway/models/users"
 )
 
 type SessionState struct {

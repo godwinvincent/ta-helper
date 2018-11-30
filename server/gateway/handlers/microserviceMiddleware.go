@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Patrick-Old/Office-Hour-Helper/sessions"
+	"github.com/alabama/final-project-alabama/server/gateway/sessions"
 	"github.com/go-redis/redis"
 )
 
