@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // -------------  Strucs -------------
@@ -54,6 +55,16 @@ func (s *MongoSession) GetCollection(dbName string, collectionName string) *Mong
 func (col *MongoCollection) InsertInCollection(user *UserModel) error {
 	fmt.Println("Inseeting into collection")
 	return col.collection.Insert(user)
+}
+
+/**
+ *
+ */
+func (col *MongoCollection) GetByUsername(username string) (*UserModel, error) {
+	model := UserModel{}
+	err := col.collection.Find(bson.M{"username": username}).One(&model)
+
+	return &model, err
 }
 
 /**
