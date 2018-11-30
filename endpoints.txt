@@ -1,0 +1,305 @@
+Could use swagger for this - John mentioned it in class, and it is the official way to write
+API documentation. Used it at Nike.
+
+
+
+All of the following APIs require the user to be authenticated. If there is no X-Student header
+when student information is being requested, or no X-Instructor header if instuctor information is
+being requested, respond with a 401 status unauthorized.
+
+/v1/officeHour
+    GET:
+        Description: List all OH that currently have an open session, showing students which OH 
+        are available to join.
+        Response:
+            Content-Type: application/json
+            Body:
+                - All OH that are currently open
+        Error(s): 
+            - None
+        Other:
+            - 405 status method not allowed
+
+    POST:
+        Description: Create a new OH session. Here, the creator of the OH is the instructor.
+        Request:
+            - Content-Type: application/json
+            - Body:
+                - Name
+                - Date and Time
+        Response:
+            - Content-Type: application/json
+            - Body:
+                - A copy of the new OH that was created.
+        Error(s):
+            - 415 unsupported media type if content type header in request is not application/json
+
+        Other:
+            - 405 status method not allowed
+
+/v1/questions/{officeHourID}
+
+    GET:
+        Description: Get the questions that are currently in the question queue for the OH in the parameter. 
+        This will be used to display to students.
+        Response:
+            Content-Type: application/json
+            Body:
+                - All questions in the queue of the OH
+        Error(s):
+            - 403 status forbidden if the currently authenticated student is not part of the OH in the parameter.
+
+    POST:
+        Description: Post a question to the queue of the specified OH.
+        Request:
+            Content-Type: application/json
+            Body:
+                - Question
+                - Student first name
+                - Student last name
+                - Date and time
+                - Question time length
+        Response:
+            Content-Type: application/json
+            Body:
+                - A copy of the question that was posted
+        Error(s):
+            - 403 status forbidden if the currently authenticated student is not part of the OH in the parameter.
+            - 415 unsupported media type if content type header in request is not application/json
+            - 400 if information provided to post is invalid.
+
+    PATCH:
+        Description: Update the specific OH name.
+        Request:
+            Content-Type: application/json
+            Body:
+                - Updated name
+        Response:
+            Content-Type: application/json
+            Body:
+                - A copy of the updated OH.
+        Error(s):
+            - 403 status forbidden if the currently authenticated student is not part of the OH in the parameter.
+            - 415 unsupported media type if content type header in request is not application/json
+
+    DELETE:
+        Description: Delete the given OH.
+        Response:
+            Content-Type: text/plain; charset=utf-8
+            Body:
+                - Message stating that the OH was deleted.
+        Error(s):
+            - 403 status forbidden if the currently authenticated student is not part of the OH in the parameter.
+
+    Other:
+        - 405 status method not allowed
+
+/v1/student
+    POST:
+        Description: Create a student profile.
+        Request:
+            - Content-Type: application/json
+            - Body:
+                - First name
+                - Last name
+                - Email
+                - Password
+                - Date and Time
+        Response:
+            - Content-Type: application/json
+            - Body: 
+                - Copy of the new student profile.
+        Error(s):
+            - 415 unsupported media type if content type header in request is not application/json
+
+        Other:
+            - 405 status method not allowed
+
+/v1/student/{studentID}
+
+    GET:
+        Description: Get the information for a specific student. This is used on a login greeting.
+        Response:
+            - Content-Type: application/json
+            - Copy of the specific student's information.
+        Error(s):
+            - 403 status forbidden if the currently authenticated student is not the given student.
+
+
+    PATCH:
+        Description: Edit a student profile. Students may edit basic information about their profile.
+        Request:
+            - Content-Type: application/json
+            - Body:
+                - First name
+                - Last name
+        Response:
+            - Content-Type: application/json
+            - Body:
+                - Copy of the updated student profile.
+        Errors:
+            - 415 unsupported media type if content type header in request is not application/json
+            - 403 status forbidden if the currently authenticated student is not the given student.
+
+        Other:
+            - 405 status method not allowed
+
+/v1/instructor
+
+    POST:
+        Description: Create a new instructor. This is done by an admin account.
+        Request:
+            - Content-Type: application/json
+            - Body:
+                - First name
+                - Last name
+                - Email
+                - Password
+                - Date and time
+        Response:
+            - Content-Type: application/json
+            - Body: 
+                - Copy of the new instructor's profile.
+        Error(s):
+            - 415 unsupported media type if content type header in request is not application/json.
+            - 400 if the information about the instructor provided is invalid.
+
+        Other:
+            - 405 status method not allowed
+
+
+/v1/instructor/{instructorID}
+
+    GET:
+        Description: Get the information for a specific instructor. This is used on a login greeting.
+        Response:
+            - Content-Type: application/json
+            - Body:
+                - A copy of the instructor retrieved.
+        Errors:
+            - 403 status forbidden if the currently authenticated instructor is not the given instructor.
+            - 400 if the instructor does not exist.
+
+    PATCH:
+        Description: Edit the instructor profile. This includes basic information (first name, last name).
+        Request:
+            - Content-Type: application/json
+            - Body:
+                - First name
+                - Last name
+        Response:
+            - Content-Type: application/json
+            - Body: Copy of the updated instructor
+        Errors:
+            - 415 unsupported media type if content type header in request is not application/json
+            - 403 status forbidden if the currently authenticated student is not the given student.
+            - 400 if the instructor does not exist.
+
+        Other:
+            - 405 status method not allowed
+
+/v1/officeHours/{officeHourID}/instuctors
+
+    POST:
+        Description: Add an instructor to a OH. This is a TA adding another TA to the OH session.
+        Request:
+            - Content-Type: application/json
+            - Body:
+                - The ID of the instuctor that is to be added
+        Response:
+            - Content-Type: application/json
+            - Body:
+                - A copy of the instructor that was added.
+    Error(s):
+        - 415 unsupported media type if content type header in request is not application/json
+        - 403 status forbidden if the currently authenticated instructor is not the given instructor.
+        - 400 if the instructor given is already a member of the OH instructor team.
+
+
+    DELETE:
+        Description: Remove an instructor from a OH. This is a TA removing another TA from a course.
+        Request:
+            - Content-Type: application/json
+            - Body:
+                - The ID of the instuctor that is to be deleted
+        Response:
+            - Content-Type: text/plain; charset=utf-8
+            - Body:
+                - Message stating that the instructor was removed.
+        Errors:
+            - 403 status forbidden if the currently authenticated student is not the given student.
+    
+    Other:
+        - 405 status method not allowed
+
+________________________________________ SESSIONS _________________________________________________
+
+
+/v1/sessions/student
+
+    POST:
+        Description: Allows a new student session to be created.
+        Request:
+            - Content-Type: application/json
+            - Body:
+                - Email
+                - Password
+        Response:
+            - Content-Type: application/json
+            - Body:
+                - A copy of the student's profile who just logged in.
+        Error(s):
+            - 415 unsupported media type if content type header in request is not application/json
+            - 401 status unauthorized if invalid credentials are provided.
+    
+    Other:
+        - 405 status method not allowed
+
+/v1/sessions/student/
+
+    DELETE:
+        Description: Allows a student to end their session. The endpoint should end in "mine".
+        Response:
+            - Content-Type: text/plain; charset=utf-8
+            - Body:
+                - Message stating that the session ended.
+        Error(s):
+        - 403 if the last segment of the endpoint does not end in "mine".
+    
+    Other:
+        - 405 status method not allowed
+
+
+/v1/sessions/instructor
+
+    POST:
+        Description: Allows a new instructor session to be created.
+        Request:
+            - Content-Type: application/json
+            - Body:
+                - Email
+                - Password
+        Response:
+            - Content-Type: application/json
+            - Body:
+                - A copy of the instructor's profile who just logged in.
+        Error(s):
+            - 415 unsupported media type if content type header in request is not application/json
+            - 401 status unauthorized if invalid credentials are provided.
+    
+    Other:
+        - 405 status method not allowed
+
+/v1/sessions/instructor/
+
+    DELETE:
+        Description: Allows a instructor to end their session. The endpoint should end in "mine".
+        Response:
+            - Content-Type: text/plain; charset=utf-8
+            - Body:
+                - Message stating that the session ended.
+        Error(s):
+        - 403 if the last segment of the endpoint does not end in "mine".
+    
+    Other:
+        - 405 status method not allowed
