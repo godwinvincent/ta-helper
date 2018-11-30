@@ -2,7 +2,6 @@ package users
 
 import (
 	"crypto/md5"
-	"encoding/hex"
 	"fmt"
 	"net/mail"
 	"strings"
@@ -19,7 +18,6 @@ var bcryptCost = 13
 
 //User represents a user account in the database
 type User struct {
-	// ID          int64  `json:"id"`
 	Email     string `json:"email" bson:"email"`
 	PassHash  []byte `json:"-" bson:"passHash"` //never JSON encoded/decoded
 	UserName  string `json:"username" bson:"username"`
@@ -84,9 +82,9 @@ func (nu *NewUser) ToUser() (*User, error) {
 	text := []byte(strings.ToLower(strings.TrimSpace(user.Email)))
 	hasher := md5.New()
 	hasher.Write(text)
-	user.PhotoURL = "https://www.gravatar.com/avatar/" + hex.EncodeToString(hasher.Sum(nil))
+
 	user.SetPassword(nu.Password)
-	user.TwoFA = false
+
 	return &user, nil
 }
 

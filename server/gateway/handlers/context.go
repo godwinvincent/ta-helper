@@ -6,8 +6,9 @@ import (
 )
 
 type Context struct {
-	SigningKey        string
-	SessionStore      sessions.Store
-	UserStore         users.Store
-	NotificationStore *Notifier
+	SigningKey   string
+	SessionStore sessions.Store
+	UserStore    users.Store
+	// NotificationStore *Notifier
+
 }

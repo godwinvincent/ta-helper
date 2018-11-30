@@ -1,12 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/alabama/final-project-alabama/server/gateway/handlers"
+	"github.com/alabama/final-project-alabama/server/gateway/models/users"
 	"github.com/alabama/final-project-alabama/server/gateway/sessions"
 	"github.com/go-redis/redis"
 )
@@ -24,7 +26,7 @@ func main() {
 	// tlsCertPath := os.Getenv("TLSCERT")
 	sessionKey := os.Getenv("SESSIONKEY")
 	redisAddr := os.Getenv("REDISADDR")
-	dsn := os.Getenv("DSN")
+	// dsn := os.Getenv("DSN")
 
 	// if tlsKeyPath == "" || tlsCertPath == "" || sessionKey == "" || redisAddr == "" || dsn == "" {
 	// 	fmt.Printf("error reading env variables")
@@ -40,7 +42,6 @@ func main() {
 		DB:       0,  // use default DB
 	})
 
-	
 	sr := &handlers.ServiceRegistry{
 		Registry: make(map[string]*handlers.ServiceInfo),
 		Redis:    redisdb,
@@ -55,35 +56,30 @@ func main() {
 		}
 	}()
 
-
-
 	// ------------- Mongo -------------
 	mongoDBName := "bens_db"
 
 	fmt.Println("Beginning...")
-	MongoConnection, err := mongo.NewSession("localhost:27017")
+	MongoConnection, err := users.NewSession("localhost:27017")
 	if err != nil {
 		log.Fatalf("Failed to connecto to Mongo DB: %v \n", err)
 	}
 	fmt.Println("Successfully connected to Mongo!")
 
-	ctx := handlers.Context{
-		SigningKey:   sessionKey,
-		SessionStore: sessions.NewRedisStore(redisdb, time.Hour),
-		// UserStore:         users.NewMySQLStore(db),
-		// NotificationStore: handlers.NewNotifier(),
-		MongoConnection
-	}
-
 	// Context
 	// ctx := models.Context{MongoConnection}
 	// get users collection
-	usersCollections := ctx.MongoConnection.GetCollection(mongoDBName, "users")
+	usersCollections := MongoConnection.GetCollection(mongoDBName, "users")
 
-
-
+	ctx := handlers.Context{
+		SigningKey:   sessionKey,
+		SessionStore: sessions.NewRedisStore(redisdb, time.Hour),
+		UserStore:    usersCollections,
+		// NotificationStore: handlers.NewNotifier(),
+	}
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("/v1/users", ctx.UsersHandler)
 	mux.Handle("/v1/", ctx.ServiceDiscovery(sr))
 	wrappedMux := handlers.NewCorsHeader(mux)
 

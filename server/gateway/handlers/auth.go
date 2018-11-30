@@ -11,7 +11,7 @@ import (
 )
 
 //UsersHandler handles users
-func (ctx *Context) UsersHandler(w http.ResponseWriter, r *http.Request, currSession *SessionState) {
+func (ctx *Context) UsersHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "POST" {
 		if r.Header.Get("Content-Type") == "application/json" {
 			decoder := json.NewDecoder(r.Body)
@@ -82,14 +82,6 @@ func (ctx *Context) SessionsHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error starting session", http.StatusInternalServerError)
 			return
 		}
-		ipAddrList := r.Header.Get("X-Forwarded-For")
-		var ipAddr string
-		if ipAddrList == "" {
-			ipAddr = r.RemoteAddr
-		} else {
-			ipAddr = strings.Split(ipAddrList, ",")[0]
-		}
-		err = ctx.UserStore.LogSuccesfulLogIn(user.ID, time.Now(), ipAddr)
 		if err != nil {
 			http.Error(w, "Error Logging succesful signin", http.StatusInternalServerError)
 			return

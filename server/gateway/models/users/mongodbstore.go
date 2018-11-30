@@ -50,8 +50,18 @@ func (s *MongoSession) GetCollection(dbName string, collectionName string) *Mong
 // ------------- Collections -------------
 
 // InsertUser inserts a User into the given Collection
-func (col *MongoCollection) InsertUser(user *User) error {
-	return col.collection.Insert(user)
+func (col *MongoCollection) Insert(user *User) (*User, error) {
+
+	if err := col.collection.Insert(user); err != nil {
+		return nil, err
+	}
+
+	newUser, err := col.GetByUserName(user.UserName)
+	if err != nil {
+		return nil, err
+	}
+
+	return newUser, nil
 }
 
 // GetByUserName retrives a user from the given collection and returns it as a User
@@ -75,7 +85,7 @@ func (col *MongoCollection) GetByID(id string) (*User, error) {
 
 // Delete
 func (col *MongoCollection) Delete(id string) error {
-	err := collection.Remove(bson.M{"_id": id})
+	err := col.collection.Remove(bson.M{"_id": id})
 	return err
 }
 
@@ -87,10 +97,3 @@ func (col *MongoCollection) Delete(id string) error {
 // 	}
 // 	return nil
 // }
-
-// ------------- Default Methods -------------
-
-//Delete deletes the user with the given ID
-func (s *MongoStore) Delete(id int64) error {
-	return nil
-}
