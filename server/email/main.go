@@ -38,6 +38,9 @@ func main() {
 		DB:       0,  // use default DB
 	})
 
+	mongoAddr := os.Getenv("MONGOADDR")
+	mongoDBName := os.Getenv("MONGODB")
+
 	ticker := time.NewTicker(10 * time.Second)
 	go func() {
 		for range ticker.C {
@@ -53,10 +56,8 @@ func main() {
 		}
 	}()
 
-	mongoDBName := "tahelper"
-
 	fmt.Println("Beginning...")
-	MongoConnection, err := handlers.NewSession("localhost:27017")
+	MongoConnection, err := handlers.NewSession(mongoAddr)
 	if err != nil {
 		log.Fatalf("Failed to connecto to Mongo DB: %v \n", err)
 	}

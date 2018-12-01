@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -18,6 +19,7 @@ func EnsureAuth(handler AuthenticatedHandler) http.Handler {
 		}
 		var user User
 		json.Unmarshal([]byte(xUser), &user)
-		handler(w, r, &user)
+		log.Println(user)
+		// handler(w, r, &user)
 	})
 }
