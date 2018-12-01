@@ -13,11 +13,9 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func EmailSendHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) EmailSendHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	if r.Method == "GET" {
 		randNum, _ := rand.Int(rand.Reader, big.NewInt(100000000000))
-		//store verification code!
-		// randNum := big.NewInt(1234)
 		randCode := randNum.Int64()
 		code := base64.URLEncoding.EncodeToString([]byte(string(randCode)))
 		from := mail.NewEmail("TA Helper", "TAHelper@godwinv.com")
@@ -42,7 +40,7 @@ func EmailSendHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	}
 }
 
-func EmailVerifyHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) EmailVerifyHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	if r.Method == "GET" {
 		// userCode := user.verificationCode
 		userCode := string(user.VerificationCode)
