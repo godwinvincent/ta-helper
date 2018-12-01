@@ -1,3 +1,7 @@
-./build.sh
+cd ./..
 
-# ssh onto EC2
+docker rm -f gateway
+
+docker run -d --name gateway \
+-p 80:80 \
+info441tapal/gateway
