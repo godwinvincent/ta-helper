@@ -1,5 +1,8 @@
 #!/bin/sh
 
+
+source exports.sh
+
 docker rm -f gateway
 docker rm -f mongo
 docker rm -f redis
@@ -12,4 +15,4 @@ cd mongo
 ./deploy_mongo.sh
 
 cd ../gateway/scripts
-deploy.sh
+./deploy.sh
