@@ -17,6 +17,7 @@ func (ctx *Context) EmailSendHandler(w http.ResponseWriter, r *http.Request, use
 	if r.Method == "GET" {
 		randNum, _ := rand.Int(rand.Reader, big.NewInt(100000000000))
 		randCode := randNum.Int64()
+		ctx.UserStore.SetVerifCode(user.UserName, string(randCode))
 		code := base64.URLEncoding.EncodeToString([]byte(string(randCode)))
 		from := mail.NewEmail("TA Helper", "TAHelper@godwinv.com")
 		subject := "TA Helper Verification"
@@ -42,13 +43,17 @@ func (ctx *Context) EmailSendHandler(w http.ResponseWriter, r *http.Request, use
 
 func (ctx *Context) EmailVerifyHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	if r.Method == "GET" {
-		// userCode := user.verificationCode
-		userCode := string(user.VerificationCode)
+		userCode, err := ctx.UserStore.GetVerifCode(user.UserName)
+		if err != nil {
+			//do something
+		}
 		received := r.URL.Query().Get("c")
 		code, _ := base64.URLEncoding.DecodeString(received)
 		if userCode == string(code) {
 			w.Write([]byte("verified"))
-			//write verified to DB
+			if err := ctx.UserStore.SetUserVerified(user.UserName); err != nil {
+				//do something
+			}
 		} else {
 			w.Write([]byte("wrongCode"))
 			//increment fail counter

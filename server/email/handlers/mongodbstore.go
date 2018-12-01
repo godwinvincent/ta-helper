@@ -69,24 +69,24 @@ func (col *MongoCollection) GetByUserName(username string) (*User, error) {
 func (col *MongoCollection) GetVerifCode(username string) (string, error) {
 	user, err := col.GetByUserName(username)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	return user.EmailVerifCode, nil
 }
 
 // SetVerifCode updates the email verification code for a given user
 func (col *MongoCollection) SetVerifCode(username string, code string) error {
-	 if err := col.collection.Update(bson.M{"username": username}, bson.M{"$set": bson.M{"emailVerifCode": code}}; err != nil {
-		 return err
-	 }
-	 return nil
+	if err := col.collection.Update(bson.M{"username": username}, bson.M{"$set": bson.M{"emailVerifCode": code}}); err != nil {
+		return err
+	}
+	return nil
 }
 
 // SetUserVerified sets a user as email-verified.
 // This means they have received and acitavted their account through the code
 //that was sent to their email.
 func (col *MongoCollection) SetUserVerified(username string) error {
-	if err := col.collection.Update(bson.M{"username": username}, bson.M{"$set": bson.M{"emailActivated": true}}; err != nil {
+	if err := col.collection.Update(bson.M{"username": username}, bson.M{"$set": bson.M{"emailActivated": true}}); err != nil {
 		return err
 	}
 	return nil

@@ -68,12 +68,12 @@ func main() {
 	usersCollections := MongoConnection.GetCollection(mongoDBName, "users")
 
 	ctx := handlers.Context{
-		MongoStore: usersCollections,
+		UserStore: usersCollections,
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/v1/email", handlers.EnsureAuth(handlers.EmailSendHandler))
-	mux.Handle("/v1/verifyEmail", handlers.EnsureAuth(handlers.EmailVerifyHandler))
+	mux.Handle("/v1/email", handlers.EnsureAuth(ctx.EmailSendHandler))
+	mux.Handle("/v1/verifyEmail", handlers.EnsureAuth(ctx.EmailVerifyHandler))
 	log.Printf("server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
 }
