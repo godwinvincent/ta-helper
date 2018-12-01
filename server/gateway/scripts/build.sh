@@ -3,8 +3,8 @@ cd ./..
 
 GOOS=linux go build
 
-docker build -t pattyold/gateway .
+docker build -t info441tapal/gateway .
 
-#docker push pattyold/gateway
+docker push info441tapal/gateway
 
 go clean
