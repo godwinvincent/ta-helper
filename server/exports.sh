@@ -1,7 +1,7 @@
 #!/bin/sh
 
 export ADDR=:80
-export REDISADDR=localhost:6379
+export REDISADDR=redis:6379
 export SESSIONKEY=testKey
-export MONGOADDR=localhost:27017
+export MONGOADDR=mongo:27017
 export MONGODB=ta-pal
