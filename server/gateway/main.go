@@ -57,7 +57,7 @@ func main() {
 	}()
 
 	// ------------- Mongo -------------
-	mongoDBName := "bens_db"
+	mongoDBName := "tahelper"
 
 	fmt.Println("Beginning...")
 	MongoConnection, err := users.NewSession("localhost:27017")
@@ -75,11 +75,11 @@ func main() {
 		SigningKey:   sessionKey,
 		SessionStore: sessions.NewRedisStore(redisdb, time.Hour),
 		UserStore:    usersCollections,
-		// NotificationStore: handlers.NewNotifier(),
 	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/v1/users", ctx.UsersHandler)
+	mux.HandleFunc("/v1/sessions", ctx.SessionsHandler)
 	mux.Handle("/v1/", ctx.ServiceDiscovery(sr))
 	wrappedMux := handlers.NewCorsHeader(mux)
 
