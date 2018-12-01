@@ -21,4 +21,5 @@ mongo
 # Run Redis
 docker run -d --name redis \
 --network ta-pal \
+-p 6379:6379 \
 redis
