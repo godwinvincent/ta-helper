@@ -21,12 +21,15 @@ func failOnError(err error, msg string) {
 
 //main is the main entry point for the server
 func main() {
+	// ------------- Important Variables -------------
 	addr := os.Getenv("ADDR")
 	// tlsKeyPath := os.Getenv("TLSKEY")
 	// tlsCertPath := os.Getenv("TLSCERT")
 	sessionKey := os.Getenv("SESSIONKEY")
 	redisAddr := os.Getenv("REDISADDR")
 	// dsn := os.Getenv("DSN")
+	mongoAddr := os.Getenv("MONGOADDR")
+	mongoDBName := os.Getenv("MONGODB")
 
 	// if tlsKeyPath == "" || tlsCertPath == "" || sessionKey == "" || redisAddr == "" || dsn == "" {
 	// 	fmt.Printf("error reading env variables")
@@ -36,6 +39,8 @@ func main() {
 		// addr = ":443"
 		addr = ":80"
 	}
+
+	// ------------- Strucs -------------
 	redisdb := redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
 		Password: "", // no password set
@@ -57,10 +62,9 @@ func main() {
 	}()
 
 	// ------------- Mongo -------------
-	mongoDBName := "tahelper"
 
-	fmt.Println("Beginning...")
-	MongoConnection, err := users.NewSession("localhost:27017")
+	fmt.Println("Mongo testing beginning...")
+	MongoConnection, err := users.NewSession(mongoAddr)
 	if err != nil {
 		log.Fatalf("Failed to connecto to Mongo DB: %v \n", err)
 	}
@@ -77,6 +81,7 @@ func main() {
 		UserStore:    usersCollections,
 	}
 
+	// ------------- Mux -------------
 	mux := http.NewServeMux()
 	mux.HandleFunc("/v1/users", ctx.UsersHandler)
 	mux.HandleFunc("/v1/sessions", ctx.SessionsHandler)
