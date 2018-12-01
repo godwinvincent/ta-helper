@@ -1,4 +1,4 @@
-wpackage users
+package users
 
 import (
 	"crypto/md5"
@@ -24,9 +24,8 @@ type User struct {
 	FirstName string `json:"firstName" bson:"firstName"`
 	LastName  string `json:"lastName" bson:"lastName"`
 
-	EmailActivated bool `json:"-" bson:"emailActivated"` //never JSON encoded/decoded
+	EmailActivated bool   `json:"-" bson:"emailActivated"` //never JSON encoded/decoded
 	EmailVerifCode string `json:"-" bson:"emailVerifCode"`
-
 }
 
 //Credentials represents user sign-in credentials
