@@ -51,3 +51,6 @@ This application will be deployed via Docker containers on AWS. We will be utili
 ![Architecture Diagram](./images/user_schema.png)
 **Question**
 ![Architecture Diagram](./images/question_schema.png)
+
+### Fun Quotes
+> John: you guys are like the Alabama of teams for server side

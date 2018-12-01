@@ -1,2 +1,9 @@
 sendgrid.env
 server/.vscode/settings.json
+
+.vscode
+
+*.DS_Store
+.DS_Store
+sendgrid.env
+dump.rdb
