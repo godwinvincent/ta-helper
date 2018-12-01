@@ -1,6 +1,9 @@
 cd ./..
 
+docker rm -f gateway
+
 docker run -d --name gateway \
+--network ta-pal \
 -e ADDR=$ADDR \
 -e REDISADDR=$REDISADDR \
 -e SESSIONKEY=$SESSIONKEY \
