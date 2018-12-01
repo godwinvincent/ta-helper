@@ -1,4 +1,4 @@
 cd ./..
 docker run -d --name gateway \
--p 443:443 \
+-p 80:80 \
 info441tapal/gateway
