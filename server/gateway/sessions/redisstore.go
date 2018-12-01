@@ -46,15 +46,15 @@ func (rs *RedisStore) Get(sid SessionID, sessionState interface{}) error {
 	cmd2 := pipe.Expire(sid.getRedisKey(), rs.SessionDuration)
 	_, err := pipe.Exec()
 	if err != nil {
-		return ErrStateNotFound
+		return err
 	}
 	val, err := cmd.Result()
 	if err != nil {
-		return ErrStateNotFound
+		return err
 	}
 	_, err = cmd2.Result()
 	if err != nil {
-		return ErrStateNotFound
+		return err
 	}
 	if err := json.Unmarshal([]byte(val), sessionState); err != nil {
 		return err
