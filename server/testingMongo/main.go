@@ -1,10 +1,10 @@
 package main
 
 import (
-	"final-project-alabama/server/testingMongo/models"
-	"final-project-alabama/server/testingMongo/mongo"
 	"fmt"
 	"log"
+
+	"github.com/alabama/final-project-alabama/server/testingMongo/models"
 )
 
 func main() {

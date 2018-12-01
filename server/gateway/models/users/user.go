@@ -18,13 +18,12 @@ var bcryptCost = 13
 
 //User represents a user account in the database
 type User struct {
-	Email     string `json:"email" bson:"email"`
-	PassHash  []byte `json:"-" bson:"passHash"` //never JSON encoded/decoded
-	UserName  string `json:"username" bson:"username"`
-	FirstName string `json:"firstName" bson:"firstName"`
-	LastName  string `json:"lastName" bson:"lastName"`
-
-	EmailActivated bool `json:"-" bson:"emailActivated"` //never JSON encoded/decoded
+	Email          string `json:"email" bson:"email"`
+	PassHash       []byte `json:"-" bson:"passHash"` //never JSON encoded/decoded
+	UserName       string `json:"username" bson:"username"`
+	FirstName      string `json:"firstName" bson:"firstName"`
+	LastName       string `json:"lastName" bson:"lastName"`
+	EmailActivated bool   `json:"-" bson:"emailActivated"` //never JSON encoded/decoded
 
 }
 
