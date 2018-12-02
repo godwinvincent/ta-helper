@@ -58,10 +58,8 @@ func main() {
 	}
 	fmt.Println("Successfully connected to Mongo!")
 
-	// Context
-	// ctx := models.Context{MongoConnection}
-	// get users collection
-	usersCollections := MongoConnection.GetCollection(mongoDBName, "users")
+	// Make a Question collection
+	quesCollec := MongoConnection.GetCollection(mongoDBName, "questions")
 
 	ctx := handlers.Context{
 		UserStore: usersCollections,

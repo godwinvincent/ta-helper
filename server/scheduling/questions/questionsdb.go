@@ -42,8 +42,10 @@ func (c *QuestionCollection) Insert(q *Question, username string) error {
 // ------------- Helper Functions -------------
 
 func questIsClean(q *Question) error {
+	// message body may not be too long
 	if len(q.QuestionBody) > MaxQuestLength {
 		return fmt.Errorf("question may not be longer than %d, it currently is %d", MaxQuestLength, len(q.QuestionBody))
 	}
+	// position
 	return nil
 }
