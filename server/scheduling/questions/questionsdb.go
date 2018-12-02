@@ -19,34 +19,39 @@ import (
 
 // Insert a question into the DB.
 // Must pass is username of the person who created the question.
-func (c *QuestionCollection) Insert(q *Question, creatorUsername string, officeColl *OfficeHourCollection) error {
+func (ctx *Context) QuestionInsert(q *Question, creatorUsername string) error {
+
+	qColl := ctx.QuestionCollection
+	oColl := ctx.OfficeHourCollection
 
 	// make sure question is clean
 	if err := questIsClean(q); err != nil {
 		return err
 	}
+
 	// add question creator
 	q.Students = append(q.Students, creatorUsername)
 
-	c.collection.Update
-
 	// find how many questions are already in the Office Hour Session
 	office := OfficeHourSession{}
-	err := officeColl.collection.Find(bson.M{"_id": bson.ObjectIdHex(id)}).One(&model)
-
-	err = c.Find(bson.M{"$or": []bson.M{bson.M{"uuid": "UUID0"}, bson.M{"name": "Joe"}}}).One(&result)
+	if err := oColl.collection.Find(bson.M{"_id": bson.ObjectIdHex(q.OfficeHourID)}).One(&office); err != nil {
+		return err
+	}
 
 	// modify the position of the question
-	// q.QuestionPosition = numQuestions + 1
+	q.QuestionPosition = office.NumQuestions + 1
 
 	// insert into DB
-	if err := c.collection.Insert(q); err != nil {
+	if err := qColl.collection.Insert(q); err != nil {
 		return err
 	}
 	return nil
 }
 
 // Add a student to question
+func (ctx *Context) QuestionAddStudent(q *Question, studentUsername string) error {
+
+}
 
 // Remove Student from question
 // if question has no students delete questions
