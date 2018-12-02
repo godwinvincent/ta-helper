@@ -7,8 +7,12 @@ import (
 	"os"
 	"time"
 
-	"github.com/alabama/final-project-alabama/server/gateway/handlers"
+	"github.com/alabama/final-project-alabama/server/gateway/models/questions"
+
 	"github.com/alabama/final-project-alabama/server/gateway/models/users"
+
+	"github.com/alabama/final-project-alabama/server/gateway/handlers"
+	"github.com/alabama/final-project-alabama/server/gateway/models"
 	"github.com/alabama/final-project-alabama/server/gateway/sessions"
 	"github.com/go-redis/redis"
 )
@@ -64,21 +68,22 @@ func main() {
 	// ------------- Mongo -------------
 
 	fmt.Println("Mongo testing beginning...")
-	MongoConnection, err := users.NewSession(mongoAddr)
+	MongoConnection, err := models.NewSession(mongoAddr)
 	if err != nil {
 		log.Fatalf("Failed to connecto to Mongo DB: %v \n", err)
 	}
 	fmt.Println("Successfully connected to Mongo!")
 
 	// Context
-	// ctx := models.Context{MongoConnection}
 	// get users collection
-	usersCollections := MongoConnection.GetCollection(mongoDBName, "users")
+	userCol := users.UserCollection{MongoConnection.GetCollection(mongoDBName, "users")}
+	questionsCol := questions.QuestionCollection{MongoConnection.GetCollection(mongoDBName, "questions")}
 
 	ctx := handlers.Context{
-		SigningKey:   sessionKey,
-		SessionStore: sessions.NewRedisStore(redisdb, time.Hour),
-		UserStore:    usersCollections,
+		SigningKey:    sessionKey,
+		SessionStore:  sessions.NewRedisStore(redisdb, time.Hour),
+		UserStore:     userCol,
+		QuestionStore: questionsCol,
 	}
 
 	// ------------- Mux -------------
