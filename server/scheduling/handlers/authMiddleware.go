@@ -8,6 +8,14 @@ import (
 //AuthenticatedHandler ..
 type AuthenticatedHandler func(http.ResponseWriter, *http.Request, *User)
 
+type User struct {
+	Email     string `json:"email" bson:"email"`
+	UserName  string `json:"username" bson:"username"`
+	FirstName string `json:"firstName" bson:"firstName"`
+	LastName  string `json:"lastName" bson:"lastName"`
+	Role      string `json:"role" bson:"role"`
+}
+
 //EnsureAuth ..
 func EnsureAuth(handler AuthenticatedHandler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

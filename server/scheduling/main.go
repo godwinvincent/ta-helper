@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/alabama/final-project-alabama/server/scheduling/handlers"
+	"github.com/alabama/final-project-alabama/server/scheduling/questions"
 	"github.com/go-redis/redis"
 )
 
@@ -52,7 +53,7 @@ func main() {
 	mongoDBName := "tahelper"
 
 	fmt.Println("Beginning...")
-	MongoConnection, err := handlers.NewSession("localhost:27017")
+	MongoConnection, err := questions.NewSession("localhost:27017")
 	if err != nil {
 		log.Fatalf("Failed to connecto to Mongo DB: %v \n", err)
 	}
@@ -61,14 +62,15 @@ func main() {
 	// Context
 	// ctx := models.Context{MongoConnection}
 	// get users collection
-	usersCollections := MongoConnection.GetCollection(mongoDBName, "users")
+
+	questionCollection := questions.QuestionCollection{MongoConnection.GetCollection(mongoDBName, "questions")}
 
 	ctx := handlers.Context{
-		UserStore: usersCollections,
+		QuestionCollection: questionCollection,
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/v1/scheduling", handlers.EnsureAuth(ctx.SchedulingHandler))
+	mux.Handle("/v1/scheduling", handlers.EnsureAuth(ctx.QuestionHandler))
 	log.Printf("server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
 }
