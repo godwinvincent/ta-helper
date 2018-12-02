@@ -64,9 +64,11 @@ func main() {
 	// get users collection
 
 	questionCollection := questions.QuestionCollection{MongoConnection.GetCollection(mongoDBName, "questions")}
+	officeHoursCollection := questions.OfficeHourCollection{MongoConnection.GetCollection(mongoDBName, "officeHours")}
 
 	ctx := handlers.Context{
-		QuestionCollection: questionCollection,
+		QuestionCollection:   questionCollection,
+		OfficeHourCollection: officeHoursCollection,
 	}
 
 	mux := http.NewServeMux()

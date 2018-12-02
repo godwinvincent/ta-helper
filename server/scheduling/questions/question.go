@@ -18,4 +18,4 @@ type Question struct {
 
 // QuestionCollection represents a connection to the
 // question collection in our DB
-type QuestionCollection *MongoCollection
+type QuestionCollection MongoCollection

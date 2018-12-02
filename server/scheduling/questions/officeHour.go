@@ -11,4 +11,4 @@ type OfficeHourSession struct {
 
 // OfficeHourCollection represents our connection to the
 // Office hours collection in our Databse
-type OfficeHourCollection *MongoCollection
+type OfficeHourCollection MongoCollection
