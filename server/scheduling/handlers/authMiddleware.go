@@ -13,7 +13,7 @@ type User struct {
 	UserName  string `json:"username" bson:"username"`
 	FirstName string `json:"firstName" bson:"firstName"`
 	LastName  string `json:"lastName" bson:"lastName"`
-	Role      string `json:"role" bson:"role"`
+	Role      string `json:"role" bson:"ro"`
 }
 
 //EnsureAuth ..
