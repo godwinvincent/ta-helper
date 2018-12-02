@@ -20,6 +20,6 @@ func EnsureAuth(handler AuthenticatedHandler) http.Handler {
 		var user User
 		json.Unmarshal([]byte(xUser), &user)
 		log.Println(user)
-		// handler(w, r, &user)
+		handler(w, r, &user)
 	})
 }

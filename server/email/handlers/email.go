@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"crypto/rand"
-	"encoding/base64"
 	"fmt"
 	"log"
 	"math/big"
@@ -16,14 +15,13 @@ import (
 func (ctx *Context) EmailSendHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	if r.Method == "GET" {
 		randNum, _ := rand.Int(rand.Reader, big.NewInt(100000000000))
-		randCode := randNum.Int64()
-		ctx.UserStore.SetVerifCode(user.UserName, string(randCode))
-		code := base64.URLEncoding.EncodeToString([]byte(string(randCode)))
+		ctx.UserStore.SetVerifCode(user.UserName, randNum.String())
+		code := randNum.String()
 		from := mail.NewEmail("TA Helper", "TAHelper@godwinv.com")
 		subject := "TA Helper Verification"
 		to := mail.NewEmail(user.FirstName+" "+user.LastName, user.Email)
-		plainTextContent := "Hello " + user.FirstName + ",<br> Thanks you for registering with TA pal! Please click the following link to verify your email address: " + "http://localhost:8080/v1/verifyEmail?c=" + code + "<br>" + "Thanks,<br>The TA Pal Team"
-		htmlContent := "Hello " + user.FirstName + ",<br> Thanks you for registering with TA pal! Please click the following link to verify your email address: " + "http://localhost:8080/v1/verifyEmail?c=" + code + "<br>" + "Thanks,<br>The TA Pal Team"
+		plainTextContent := "Hello " + user.FirstName + ",<br> Thanks you for registering with TA pal! Verification Code: " + code + "<br>" + "Thanks,<br>The TA Pal Team"
+		htmlContent := "Hello " + user.FirstName + ",<br> Thanks you for registering with TA pal! Verification Code: " + code + "<br>" + "Thanks,<br>The TA Pal Team"
 		message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 		client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
 		response, err := client.Send(message)
@@ -43,13 +41,12 @@ func (ctx *Context) EmailSendHandler(w http.ResponseWriter, r *http.Request, use
 
 func (ctx *Context) EmailVerifyHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	if r.Method == "GET" {
+		received := r.URL.Query().Get("c")
 		userCode, err := ctx.UserStore.GetVerifCode(user.UserName)
 		if err != nil {
 			//do something
 		}
-		received := r.URL.Query().Get("c")
-		code, _ := base64.URLEncoding.DecodeString(received)
-		if userCode == string(code) {
+		if userCode == received {
 			w.Write([]byte("verified"))
 			if err := ctx.UserStore.SetUserVerified(user.UserName); err != nil {
 				//do something

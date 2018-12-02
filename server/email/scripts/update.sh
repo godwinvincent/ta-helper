@@ -9,4 +9,5 @@ docker run -d --name email \
 -e SESSIONKEY=$SESSIONKEY \
 -e MONGOADDR=$MONGOADDR \
 -e MONGODB=$MONGODB \
+-e SENDGRID_API_KEY=$SENDGRID_API_KEY \
 info441tapal/email

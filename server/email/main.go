@@ -74,7 +74,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.Handle("/v1/email", handlers.EnsureAuth(ctx.EmailSendHandler))
-	mux.Handle("/v1/verifyEmail", handlers.EnsureAuth(ctx.EmailVerifyHandler))
+	mux.Handle("/v1/email/verify", handlers.EnsureAuth(ctx.EmailVerifyHandler))
 	log.Printf("server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
 }
