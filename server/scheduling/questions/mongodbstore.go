@@ -51,9 +51,8 @@ func NewSession(url string) (*MongoSession, error) {
 //GetCollection returns a Collection session.
 //It takes in name of the DB and name of a collection in that
 //Mongo DB.
-func (s *MongoSession) GetCollection(dbName string, collectionName string) *MongoCollection {
-	tempCollection := MongoCollection{s.session.DB(dbName).C(collectionName)}
-	return &tempCollection
+func (s *MongoSession) GetCollection(dbName string, collectionName string) *mgo.Collection {
+	return s.session.DB(dbName).C(collectionName)
 }
 
 // GetByUserName retrives a user from the given collection and returns it as a User

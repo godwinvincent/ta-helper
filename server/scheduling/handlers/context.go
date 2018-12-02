@@ -1,5 +1,7 @@
 package handlers
 
+import "github.com/alabama/final-project-alabama/server/scheduling/questions"
+
 type Context struct {
-	UserStore *MongoCollection
+	QuestionCollection *questions.QuestionCollection
 }
