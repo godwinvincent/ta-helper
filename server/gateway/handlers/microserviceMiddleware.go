@@ -90,7 +90,7 @@ func (ctx *Context) ServiceDiscovery(sr *ServiceRegistry) http.Handler {
 				if service.Priviledged {
 					currSession := SessionState{}
 					if _, err := sessions.GetState(r, ctx.SigningKey, ctx.SessionStore, &currSession); err != nil {
-						http.Error(w, "please sign-in", http.StatusUnauthorized)
+						http.Error(w, "please sign-in"+err.Error(), http.StatusUnauthorized)
 						r.Header.Del("X-User")
 						return
 					}
