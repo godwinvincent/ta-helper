@@ -9,11 +9,7 @@ package questions
 
 import (
 	"fmt"
-
-	"github.com/alabama/final-project-alabama/server/gateway/models"
 )
-
-type QuestionCollection models.MongoCollection
 
 // ------------- Question Functions -------------
 

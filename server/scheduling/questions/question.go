@@ -11,3 +11,5 @@ type Question struct {
 	Students         []string `json:"students" bson:"students"`
 	QuestionType     string   `json:"questType" bson:"questType"`
 }
+
+type QuestionCollection MongoCollection
