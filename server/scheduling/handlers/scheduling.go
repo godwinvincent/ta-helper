@@ -64,7 +64,7 @@ func (ctx *Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, us
 func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// /v1/officehour/{officeHourID}
 	params := r.URL.Query()
-	officeHourID := params.Get("officeHourID")
+	officeHourID := params.Get("oh")
 	if r.Method == "GET" {
 		questions, err := ctx.GetAllQuestions(officeHourID)
 		if err != nil {
@@ -96,11 +96,7 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 			return
 		}
 		// the question contains the officeHourID already
-<<<<<<< HEAD
 		if err := ctx.QuestionInsert(&question, user.UserName); err != nil {
-=======
-		if err := ctx.Insert(&question, user.UserName); err != nil {
->>>>>>> 6bc640aa1b3733df633be149d6c586f045450fce
 			http.Error(w, "Error inserting question", http.StatusInternalServerError)
 			return
 		}
@@ -126,11 +122,11 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 		// db call to get officeHourID and see if instructor of oh
 		// channel is part of this oh via db call. If it returns something,
 		// assume the instructor is part of the channel.
-		validInstructor := ctx.IsValidInstructor(officeHourID, user.UserName)
-		if len(validInstructor) == 0 {
-			http.Error(w, "Only an instructor of the office hour can patch the office hour", http.StatusForbidden)
-			return
-		}
+		// validInstructor := ctx.IsValidInstructor(officeHourID, user.UserName)
+		// if len(validInstructor) == 0 {
+		// 	http.Error(w, "Only an instructor of the office hour can patch the office hour", http.StatusForbidden)
+		// 	return
+		// }
 		// decode into updates struct when ready
 		/*
 			decoder := json.NewDecoder(r.Body)

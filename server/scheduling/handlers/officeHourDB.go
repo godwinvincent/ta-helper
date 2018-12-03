@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"encoding/hex"
+	"log"
+
 	"github.com/alabama/final-project-alabama/server/scheduling/models"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -18,6 +21,15 @@ func (ctx *Context) GetOfficeHours() ([]models.OfficeHourSession, error) {
 	var results []models.OfficeHourSession
 	if err := ctx.OfficeHourCollection.Collection.Find(bson.M{}).All(&results); err != nil {
 		return nil, err
+	}
+	for _, oh := range results {
+		log.Println(oh.ID.Hex())
+		decodedID, err := hex.DecodeString(oh.ID.Hex())
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		oh.ID = bson.ObjectId(decodedID)
 	}
 	return results, nil
 }

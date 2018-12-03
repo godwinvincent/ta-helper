@@ -41,7 +41,7 @@ func main() {
 	ticker := time.NewTicker(10 * time.Second)
 	go func() {
 		for range ticker.C {
-			event := &ServiceEvent{"scheduling", "/v1/officehours", "schedule:80", time.Now(), true}
+			event := &ServiceEvent{"scheduling", "/v1/officehours.*", "schedule:80", time.Now(), true}
 			jsonString, err := json.Marshal(event)
 			if err != nil {
 				log.Fatal(err)

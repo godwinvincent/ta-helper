@@ -6,6 +6,7 @@ docker rm -f schedule
 docker run -d --name schedule \
 --network ta-pal \
 -e ADDR=$ADDR \
+-e REDISADDR=$REDISADDR \
 -e MONGOADDR=$MONGOADDR \
 -e MONGODB=$MONGODB \
 info441tapal/schedule
