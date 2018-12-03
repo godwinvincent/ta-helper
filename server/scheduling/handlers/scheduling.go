@@ -24,7 +24,7 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 				http.Error(w, "Request Body not in right format", http.StatusBadRequest)
 				return
 			}
-			if err := ctx.OfficeHourCollection.Insert(&officeHour, user.UserName); err != nil {
+			if err := ctx.OfficeHourCollection.InsertOfficeHour(&officeHour, user.UserName); err != nil {
 				http.Error(w, "Error inserting office hours", http.StatusInternalServerError)
 				return
 			}
@@ -33,6 +33,7 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 				http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
 				return
 			}
+			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
 			w.Write(jsonStr)
 		} else {
@@ -47,6 +48,7 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 			http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
 			return
 		}
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonStr)
 
@@ -57,7 +59,7 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 
 }
 
-func (ctx *questions.Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// /v1/officehour/{officeHourID}
 	params := r.URL.Query()
 	officeHourID := params.Get("officeHourID")
@@ -84,7 +86,7 @@ func (ctx *questions.Context) SpecificOfficeHourHandler(w http.ResponseWriter, r
 			return
 		}
 		// the question contains the officeHourID already
-		if err := ctx.QuestionCollection.Insert(&question, user.UserName); err != nil {
+		if err := ctx.Insert(&question, user.UserName); err != nil {
 			http.Error(w, "Error inserting question", http.StatusInternalServerError)
 			return
 		}
@@ -93,14 +95,72 @@ func (ctx *questions.Context) SpecificOfficeHourHandler(w http.ResponseWriter, r
 			http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
 			return
 		}
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonStr)
 	} else if r.Method == "PATCH" {
-		// get office hour id and see if instructor of oh channel is part of this oh via db call
+		// check content type
+		if r.Header.Get("Content-Type") != "application/json" {
+			http.Error(w, "Request Body must be in JSON", http.StatusUnsupportedMediaType)
+			return
+		}
+		// make sure the user is an instructor
 		if user.Role != "instructor" {
 			http.Error(w, "Only an instructor of the office hour can patch the office hour", http.StatusForbidden)
 			return
 		}
+		// db call to get officeHourID and see if instructor of oh
+		// channel is part of this oh via db call. If it returns something,
+		// assume the instructor is part of the channel.
+		validInstructor := ctx.IsValidInstructor(officeHourID, user.UserName)
+		if len(validInstructor) == 0 {
+			http.Error(w, "Only an instructor of the office hour can patch the office hour", http.StatusForbidden)
+			return
+		}
+		// decode into updates struct when ready
+		/*
+			decoder := json.NewDecoder(r.Body)
+			var updatedQuestion questions.Updates
+			err := decoder.Decode(&updatedQuestion)
+
+			// call db to update
+			if err := ctx.UpdateOfficeHour(&officeHour, user.UserName); err != nil {
+				http.Error(w, "Error inserting office hours", http.StatusInternalServerError)
+				return
+			}
+			// marshal to json for response to user
+			jsonStr, err := json.Marshal(officeHour)
+			if err != nil {
+				http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			w.Write(jsonStr)
+		*/
+	} else if r.Method == "DELETE" {
+		if r.Header.Get("Content-Type") != "application/json" {
+			http.Error(w, "Request Body must be in JSON", http.StatusUnsupportedMediaType)
+			return
+		}
+		/*
+			DB call to check if user.UserName is creator of office hour id
+			assuming we get something back if user is the creator of the office hour
+
+			if len(whatwegetback) == 0 {
+				http.Error(w, "Only the creator can delete the office hour", http.StatusForbidden)
+				return
+			}
+
+			DB call to make delete
+			if err := ctx.Insert(&question, user.UserName); err != nil {
+				http.Error(w, "Error inserting question", http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			w.WriteHeader(http.StatusOK)
+			w.Write("Office Hour Channel Deleted")
+		*/
 	}
 }
 
