@@ -4,13 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/alabama/final-project-alabama/server/scheduling/questions"
+	"github.com/alabama/final-project-alabama/server/scheduling/models"
 )
 
-func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// create office hour, get all office hours
 	// v1/officeHour
-
 	if r.Method == "POST" {
 		if user.Role != "instructor" {
 			http.Error(w, "Only instructor can create office hours", http.StatusForbidden)
@@ -18,13 +17,13 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 		}
 		if r.Header.Get("Content-Type") == "application/json" {
 			decoder := json.NewDecoder(r.Body)
-			var officeHour questions.OfficeHourSession
+			var officeHour models.OfficeHourSession
 			err := decoder.Decode(&officeHour)
 			if err != nil {
 				http.Error(w, "Request Body not in right format", http.StatusBadRequest)
 				return
 			}
-			if err := ctx.OfficeHourCollection.Insert(&officeHour, user.UserName); err != nil {
+			if err := ctx.OfficeHoursInsert(&officeHour, user.UserName); err != nil {
 				http.Error(w, "Error inserting office hours", http.StatusInternalServerError)
 				return
 			}
@@ -41,7 +40,11 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 		}
 
 	} else if r.Method == "GET" {
-		officeHours := ctx.OfficeHourCollection.Get()
+		officeHours, err := ctx.GetOfficeHours()
+		if err != nil {
+			http.Error(w, "Error getting office hours", http.StatusInternalServerError)
+			return
+		}
 		jsonStr, err := json.Marshal(officeHours)
 		if err != nil {
 			http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
@@ -57,16 +60,24 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 
 }
 
-func (ctx *questions.Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// /v1/officehour/{officeHourID}
 	params := r.URL.Query()
 	officeHourID := params.Get("officeHourID")
 	if r.Method == "GET" {
-		// no need to check if user is authorized, all users are able to view all OH and questions.
-		if err := ctx.QuestionCollection.GetAll(officeHourID); err != nil {
-			http.Error(w, "Error getting all questions", http.StatusInternalServerError)
+		questions, err := ctx.GetAllQuestions(officeHourID)
+		if err != nil {
+			http.Error(w, "Error getting office hours", http.StatusInternalServerError)
 			return
 		}
+		jsonStr, err := json.Marshal(questions)
+		if err != nil {
+			http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonStr)
+
 	} else if r.Method == "POST" {
 		if user.Role != "student" {
 			http.Error(w, "Only a student can create a question", http.StatusForbidden)
@@ -77,14 +88,14 @@ func (ctx *questions.Context) SpecificOfficeHourHandler(w http.ResponseWriter, r
 			return
 		}
 		decoder := json.NewDecoder(r.Body)
-		var question questions.Question
+		var question models.Question
 		err := decoder.Decode(&question)
 		if err != nil {
 			http.Error(w, "Request body in incorrect format", http.StatusBadRequest)
 			return
 		}
 		// the question contains the officeHourID already
-		if err := ctx.QuestionCollection.Insert(&question, user.UserName); err != nil {
+		if err := ctx.QuestionInsert(&question, user.UserName); err != nil {
 			http.Error(w, "Error inserting question", http.StatusInternalServerError)
 			return
 		}
@@ -104,7 +115,7 @@ func (ctx *questions.Context) SpecificOfficeHourHandler(w http.ResponseWriter, r
 	}
 }
 
-func (ctx *questions.Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// PATCH questions
 	// POST to add student to question
 	// GET (?) more info
@@ -112,11 +123,11 @@ func (ctx *questions.Context) SpecificQuestionHandler(w http.ResponseWriter, r *
 
 }
 
-func (ctx *questions.Context) TAHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) TAHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	//POST answering a question
 	//PATCH ?possible editing order and duration
 }
 
-func (ctx *questions.Context) FAQHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) FAQHandler(w http.ResponseWriter, r *http.Request, user *User) {
 
 }

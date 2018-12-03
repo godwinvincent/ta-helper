@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/alabama/final-project-alabama/server/scheduling/handlers"
-	"github.com/alabama/final-project-alabama/server/scheduling/questions"
+	"github.com/alabama/final-project-alabama/server/scheduling/models"
 	"github.com/go-redis/redis"
 )
 
@@ -29,6 +29,9 @@ func main() {
 		addr = ":80"
 	}
 
+	mongoAddr := os.Getenv("MONGOADDR")
+	mongoDBName := os.Getenv("MONGODB")
+
 	redisdb := redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
 		Password: "", // no password set
@@ -38,7 +41,7 @@ func main() {
 	ticker := time.NewTicker(10 * time.Second)
 	go func() {
 		for range ticker.C {
-			event := &ServiceEvent{"scheduling", "/v1/scheduling", "scheduling:80", time.Now(), true}
+			event := &ServiceEvent{"scheduling", "/v1/officehours", "schedule:80", time.Now(), true}
 			jsonString, err := json.Marshal(event)
 			if err != nil {
 				log.Fatal(err)
@@ -50,10 +53,8 @@ func main() {
 		}
 	}()
 
-	mongoDBName := "tahelper"
-
 	fmt.Println("Beginning...")
-	MongoConnection, err := questions.NewSession("localhost:27017")
+	MongoConnection, err := models.NewSession(mongoAddr)
 	if err != nil {
 		log.Fatalf("Failed to connecto to Mongo DB: %v \n", err)
 	}
@@ -63,8 +64,8 @@ func main() {
 	// ctx := models.Context{MongoConnection}
 	// get users collection
 
-	questionCollection := questions.QuestionCollection{MongoConnection.GetCollection(mongoDBName, "questions")}
-	officeHoursCollection := questions.OfficeHourCollection{MongoConnection.GetCollection(mongoDBName, "officeHours")}
+	questionCollection := models.QuestionCollection{MongoConnection.GetCollection(mongoDBName, "questions")}
+	officeHoursCollection := models.OfficeHourCollection{MongoConnection.GetCollection(mongoDBName, "officeHours")}
 
 	ctx := handlers.Context{
 		QuestionCollection:   questionCollection,
@@ -72,7 +73,8 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/v1/scheduling", handlers.EnsureAuth(ctx.QuestionHandler))
+	mux.Handle("/v1/officehours", handlers.EnsureAuth(ctx.OfficeHourHandler))
+	mux.Handle("/v1/officehours/", handlers.EnsureAuth(ctx.SpecificOfficeHourHandler))
 	log.Printf("server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
 }
