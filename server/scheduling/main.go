@@ -21,16 +21,27 @@ type ServiceEvent struct {
 	Priviledged   bool      `json:"priviledged"`
 }
 
+// getenv retrieves the enviornment variable.
+// If it fails to find it, main.go will log the issue
+// and exit.
+func getenv(key string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		log.Fatalf("Error: main.go failed to retrieve env variable: %s\n", key)
+	}
+	return value
+}
+
 //main is the main entry point for the server
 func main() {
-	addr := os.Getenv("ADDR")
+	addr := getenv("ADDR")
 	redisAddr := os.Getenv("REDISADDR")
 	if len(addr) == 0 {
 		addr = ":80"
 	}
 
-	mongoAddr := os.Getenv("MONGOADDR")
-	mongoDBName := os.Getenv("MONGODB")
+	mongoAddr := getenv("MONGOADDR")
+	mongoDBName := getenv("MONGODB")
 
 	redisdb := redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
@@ -53,7 +64,6 @@ func main() {
 		}
 	}()
 
-	fmt.Println("Beginning...")
 	MongoConnection, err := models.NewSession(mongoAddr)
 	if err != nil {
 		log.Fatalf("Failed to connecto to Mongo DB: %v \n", err)
@@ -61,12 +71,8 @@ func main() {
 	fmt.Println("Successfully connected to Mongo!")
 
 	// Context
-	// ctx := models.Context{MongoConnection}
-	// get users collection
-
 	questionCollection := models.QuestionCollection{MongoConnection.GetCollection(mongoDBName, "questions")}
 	officeHoursCollection := models.OfficeHourCollection{MongoConnection.GetCollection(mongoDBName, "officeHours")}
-
 	ctx := handlers.Context{
 		QuestionCollection:   questionCollection,
 		OfficeHourCollection: officeHoursCollection,

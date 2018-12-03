@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/alabama/final-project-alabama/server/scheduling/models"
@@ -63,10 +64,13 @@ func (ctx *Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, us
 
 func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// /v1/officehour/{officeHourID}
+
+	fmt.Println("Arrived in SpecificOfficeHourHandler()")
+
 	params := r.URL.Query()
 	officeHourID := params.Get("oh")
 	if r.Method == "GET" {
-		questions, err := ctx.GetAllQuestions(officeHourID)
+		questions, err := ctx.GetAll(officeHourID)
 		if err != nil {
 			http.Error(w, "Error getting office hours", http.StatusInternalServerError)
 			return
@@ -89,6 +93,7 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 			http.Error(w, "Request Body must be in JSON", http.StatusUnsupportedMediaType)
 			return
 		}
+
 		decoder := json.NewDecoder(r.Body)
 		var question models.Question
 		err := decoder.Decode(&question)
@@ -96,17 +101,20 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 			http.Error(w, "Request body in incorrect format", http.StatusBadRequest)
 			return
 		}
+
 		question.OfficeHourID = officeHourID
 		// the question contains the officeHourID already
 		if err := ctx.QuestionInsert(&question, user.UserName); err != nil {
 			http.Error(w, "Error inserting question", http.StatusInternalServerError)
 			return
 		}
+
 		jsonStr, err := json.Marshal(question)
 		if err != nil {
 			http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
 			return
 		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonStr)

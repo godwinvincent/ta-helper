@@ -14,9 +14,12 @@ type OfficeHourSession struct {
 	TAs []string `json:"ta" bson:"ta"`
 }
 
+// NewOfficeHourSession allows us to take in a new incoming
+// Office hour session safely, it allows us to control what fields
+// we want to accept.
 type NewOfficeHourSession struct {
-	Name         string `json:"name" bson:"name"`
-	NumQuestions int    `json:"numQuestions" bson:"numQuestions"`
+	Name string `json:"name" bson:"name"`
+	// NumQuestions int    `json:"numQuestions" bson:"numQuestions"`
 	// slice of TA usernames
 	TAs []string `json:"ta" bson:"ta"`
 }

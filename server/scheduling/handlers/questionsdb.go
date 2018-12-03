@@ -8,6 +8,8 @@ package handlers
  */
 
 import (
+	"encoding/hex"
+	"errors"
 	"fmt"
 
 	"github.com/alabama/final-project-alabama/server/scheduling/models"
@@ -16,19 +18,28 @@ import (
 
 // ------------- Question Functions -------------
 
-// question length may not be more than 700 characters (that's plenty long)
+// GetAllQuestions gets all questions from an office hour session.
+// Takes in office hour id.
+// func (ctx *Context) GetAllQuestions(officeHourID string) ([]models.Question, error) {
+// 	var results []models.Question
+// 	if err := ctx.QuestionCollection.Collection.Find(bson.M{"offHourID": officeHourID}).All(&results); err != nil {
+// 		return nil, err
+// 	}
+// 	return results, nil
+// }
 
-//Get all question in office hour id
-func (ctx *Context) GetAllQuestions(officeHourID string) ([]models.Question, error) {
-	var results []models.Question
-	if err := ctx.QuestionCollection.Collection.Find(bson.M{"offHourID": officeHourID}).All(&results); err != nil {
-		return nil, err
+//QuestionGetOne get a specific question
+func (ctx *Context) QuestionGetOne(questionID string) (models.Question, error) {
+	var result models.Question
+
+	if err := ctx.QuestionCollection.Collection.Find(bson.M{"_id": bson.ObjectIdHex(questionID)}).One(&result); err != nil {
+		return result, err
 	}
-	return results, nil
+	return result, nil
 }
 
-// Insert a question into the DB.
-// Must pass is username of the person who created the question.
+// QuestionInsert inserts a question into the DB.
+// Must pass in username of the person who created the question.
 func (ctx *Context) QuestionInsert(q *models.Question, creatorUsername string) error {
 
 	qColl := ctx.QuestionCollection
@@ -63,8 +74,8 @@ func (ctx *Context) QuestionInsert(q *models.Question, creatorUsername string) e
 }
 
 // QuestionAddStudent adds a student to a question
-// Takes in a the ID of the question
-//
+// Takes in a the ID of the question and the username
+// of the student who should be added.
 func (ctx *Context) QuestionAddStudent(questionID string, studentUsername string) error {
 
 	err2 := ctx.QuestionCollection.Collection.Update(bson.M{"_id": bson.ObjectIdHex(questionID)}, bson.M{"$addToSet": bson.M{"students": studentUsername}})
@@ -75,19 +86,73 @@ func (ctx *Context) QuestionAddStudent(questionID string, studentUsername string
 	return nil
 }
 
-func (ctx *Context) GetAll(officeHourID string) error {
-	// db call to get all questions in given office hour
+// QuestionRemStudent removes a student from a question.
+// Takes in a the ID of the question and the username
+// of the student that should be removed.
+func (ctx *Context) QuestionRemStudent(questionID string, studentUsername string) error {
+	err2 := ctx.QuestionCollection.Collection.Update(bson.M{"_id": bson.ObjectIdHex(questionID)}, bson.M{"$pull": bson.M{"students": studentUsername}})
+
+	if err2 != nil {
+		return err2
+	}
+
+	// call delete on the question: it checks if no students are in it.
+	// if there are non then it deletes the question
+	ctx.QuestionRemStudent(questionID, "student")
 
 	return nil
 }
 
-// Remove Student from question
-// if question has no students delete questions
+// GetAll returns all questions from a specific Offie Hour Session
+func (ctx *Context) GetAll(officeHourID string) ([]models.Question, error) {
+	// db call to get all questions in given office hour
+	var results []models.Question
+	if err := ctx.QuestionCollection.Collection.Find(bson.M{}).All(&results); err != nil {
+		return nil, err
+	}
+	// convert each ID to a readable format
+	for _, oh := range results {
+		decodedID, err := hex.DecodeString(oh.ID.Hex())
+		if err != nil {
+			return nil, err
+		}
+		oh.ID = bson.ObjectId(decodedID)
+	}
+	return results, nil
+}
 
-//
+// QuestionDelete deletes a question.
+// Requirements: question must either have no students in it,
+// or the user must be an instructor
+func (ctx *Context) QuestionDelete(questionID string, userRole string) error {
+	if userRole == "instructor" {
+		// delete question
+		if err := ctx.QuestionCollection.Collection.Remove(bson.M{"_id": bson.ObjectIdHex(questionID)}); err != nil {
+			return err
+		}
+
+	} else {
+		// get the question and check how many students are in it
+		q, err := ctx.QuestionGetOne(questionID)
+		if err != nil {
+			return err
+		}
+		if len(q.Students) == 0 {
+			if err := ctx.QuestionCollection.Collection.Remove(bson.M{"_id": bson.ObjectIdHex(questionID)}); err != nil {
+				return err
+			}
+		} else {
+			return errors.New("question still has students associated to it")
+		}
+
+	}
+	return nil
+}
+
+// ------------------- Not DONE ---------------- // FIXME:
 
 // Change a questions' order
-// Only a TA can do that
+// Only an instructor can do that
 
 // ------------- Helper Functions -------------
 
