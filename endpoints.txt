@@ -1,8 +1,3 @@
-Could use swagger for this - John mentioned it in class, and it is the official way to write
-API documentation. Used it at Nike.
-
-
-
 All of the following APIs require the user to be authenticated. If there is no X-Student header
 when student information is being requested, or no X-Instructor header if instuctor information is
 being requested, respond with a 401 status unauthorized.
@@ -37,8 +32,47 @@ being requested, respond with a 401 status unauthorized.
         Other:
             - 405 status method not allowed
 
-/v1/questions/{officeHourID}
+/v1/question/{officeHourID}/{questionID}
+    GET:
+        Description: Get a specific question and it's information. Both instructors and students
+        can call this. This is used when a question is clicked on.
+        Response:
+            Content-Type: application/json
+            Body:
+                - The question and it's information
+        Error(s):
+            - 403 status forbidden if the user is not an authorized student or instructor part of
+            the given officeHourID.
+    PATCH:
+        Description: Update a specific question.
+        Request:
+            Content-Type: application/json
+            Body:
+                - Updated question
+        Response:
+            Content-Type: application/json
+            Body:
+                - A copy of the updated question.
+        Error(s):
+            - 403 status forbidden if the user is not the creator of the question or is not part
+            of the given office hour.
+            - 415 unsupported media type if content type header in request is not application/json.
+        DELETE:
+        Description: Delete a specific question.
+        Request:
+            Content-Type: application/json
+            Body:
+                - Question id to delete.
+        Response:
+            Content-Type: text/plain; charset=utf-8
+            Body:
+                - A message stating that the questionw was deleted.
+        Error(s):
+            - 403 status forbidden if the user is not the creator of the question or is not
+            the instructor of the office hour session.
+            - 415 unsupported media type if content type header in request is not application/json.
 
+/v1/officeHour/{officeHourID}
     GET:
         Description: Get the questions that are currently in the question queue for the OH in the parameter. 
         This will be used to display to students.
@@ -47,7 +81,7 @@ being requested, respond with a 401 status unauthorized.
             Body:
                 - All questions in the queue of the OH
         Error(s):
-            - 403 status forbidden if the currently authenticated student is not part of the OH in the parameter.
+            - 500 internal server error calling DB
 
     POST:
         Description: Post a question to the queue of the specified OH.
