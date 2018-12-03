@@ -57,6 +57,12 @@ func (ctx *Context) QuestionInsert(q *Question, creatorUsername string) error {
 	return nil
 }
 
+func (c *QuestionCollection) GetAll(officeHourID string) error {
+	// db call to get all questions in given office hour
+
+	return nil
+}
+
 // Add a student to question
 func (ctx *Context) QuestionAddStudent(q *Question, studentUsername string) error {
 	return nil
