@@ -4,3 +4,8 @@ footer {
     bottom: 10px;
     width: 100%;
 }
+
+#student-button {
+    margin: 20px;
+    position: block;
+}
