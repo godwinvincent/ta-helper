@@ -13,6 +13,7 @@ How to connect to Mongo DB once it's been deployed.
 ```
 docker run -it \
 --rm \
+--name mongoCLI \
 --network ta-pal \
 mongo sh -c 'exec mongo mongo:27017'
 ```

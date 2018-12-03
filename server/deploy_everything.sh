@@ -14,6 +14,7 @@ docker network create ta-pal
 
 cd mongo 
 ./deploy_mongo.sh
+cd ..
 
-cd ../gateway/scripts
+cd gateway/scripts/
 ./deploy_gateway.sh
