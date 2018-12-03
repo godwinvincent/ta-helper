@@ -1,4 +1,4 @@
-package questions
+package models
 
 type Context struct {
 	QuestionCollection   QuestionCollection

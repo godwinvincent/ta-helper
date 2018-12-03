@@ -1,4 +1,4 @@
-package questions
+package models
 
 // OfficeHourSession is represents an office hour session
 // for one or multiple TAs

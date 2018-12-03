@@ -9,18 +9,12 @@ package questions
  */
 
 import (
+	"github.com/alabama/final-project-alabama/server/scheduling/models"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
 // ------------- Code from Gateway -------------
-type MongoSession struct {
-	session *mgo.Session
-}
-
-type MongoCollection struct {
-	collection *mgo.Collection
-}
 
 //User represents a user account in the database
 type User struct {
@@ -38,26 +32,26 @@ type User struct {
  * NewSession creates a new connection to the Mongo Database
  * and returns it as a *MongoSession.
  */
-func NewSession(url string) (*MongoSession, error) {
+func NewSession(url string) (*models.MongoSession, error) {
 	// Use the URL to make a connection to that URL
 	session, err := mgo.Dial(url)
 	if err != nil {
 		return nil, err
 	}
 
-	return &MongoSession{session}, err
+	return &models.MongoSession{session}, err
 }
 
 //GetCollection returns a Collection session.
 //It takes in name of the DB and name of a collection in that
 //Mongo DB.
-func (s *MongoSession) GetCollection(dbName string, collectionName string) *mgo.Collection {
+func (s *models.MongoSession) GetCollection(dbName string, collectionName string) *mgo.Collection {
 	return s.session.DB(dbName).C(collectionName)
 }
 
 // GetByUserName retrives a user from the given collection and returns it as a User
 func (col *MongoCollection) GetByUserName(username string) (*User, error) {
 	model := User{}
-	err := col.collection.Find(bson.M{"username": username}).One(&model)
+	err := col.Collection.Find(bson.M{"username": username}).One(&model)
 	return &model, err
 }

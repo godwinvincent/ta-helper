@@ -17,6 +17,15 @@ import (
 
 // question length may not be more than 700 characters (that's plenty long)
 
+//Get all question in office hour id
+func (ctx *Context) GetAllQuestions(officeHourID string) ([]Question, error) {
+	var results []Question
+	if err := ctx.QuestionCollection.collection.Find(bson.M{"_id": bson.ObjectIdHex(officeHourID)}).All(&results); err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
 // Insert a question into the DB.
 // Must pass is username of the person who created the question.
 func (ctx *Context) QuestionInsert(q *Question, creatorUsername string) error {
@@ -47,6 +56,18 @@ func (ctx *Context) QuestionInsert(q *Question, creatorUsername string) error {
 	}
 	return nil
 }
+
+// QuestionAddStudent adds a student to a question
+// Takes in a the ID of the question
+//
+func (ctx *models.Context) QuestionAddStudent(questionID string, studentUsername string) error {
+
+	err2 := ctx.QuestionCollection.collection.Update(bson.M{"_id": bson.ObjectIdHex(questionID)}, bson.M{"$addToSet": bson.M{"students": studentUsername}})
+
+	if err2 != nil {
+		return err2
+	}
+	return nil
 
 func (c *QuestionCollection) GetAll(officeHourID string) error {
 	// db call to get all questions in given office hour
@@ -82,7 +103,6 @@ func questIsClean(q *Question) error {
 	if len(q.QuestionType) == 0 {
 		return fmt.Errorf("this question must have a question type")
 	}
-	// position
 
 	return nil
 }
