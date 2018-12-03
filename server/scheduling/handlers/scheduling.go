@@ -56,7 +56,6 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
 		return
 	}
-
 }
 
 func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
@@ -161,6 +160,9 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 			w.WriteHeader(http.StatusOK)
 			w.Write("Office Hour Channel Deleted")
 		*/
+	} else {
+		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
+		return
 	}
 }
 
