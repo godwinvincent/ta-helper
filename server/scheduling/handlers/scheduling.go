@@ -7,7 +7,7 @@ import (
 	"github.com/alabama/final-project-alabama/server/scheduling/questions"
 )
 
-func (ctx *Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// create office hour, get all office hours
 	// v1/officeHour
 
@@ -57,7 +57,7 @@ func (ctx *Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, us
 
 }
 
-func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *questions.Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// /v1/officehour/{officeHourID}
 	params := r.URL.Query()
 	officeHourID := params.Get("officeHourID")
@@ -104,12 +104,16 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 	}
 }
 
+<<<<<<< HEAD
 // GET all questions for office hours
 // POST new question
 // PATCH Office hour name
 // DELETE Office hours
 
 func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Request, user *User) {
+=======
+func (ctx *questions.Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Request, user *User) {
+>>>>>>> 0ee28d7715e258c436000b4ad83f8a5dd8af3e92
 	// PATCH questions
 	// POST to add student to question
 	// GET (?) more info
@@ -117,11 +121,11 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 
 }
 
-func (ctx *Context) TAHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *questions.Context) TAHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	//POST answering a question
 	//PATCH ?possible editing order and duration
 }
 
-func (ctx *Context) FAQHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *questions.Context) FAQHandler(w http.ResponseWriter, r *http.Request, user *User) {
 
 }
