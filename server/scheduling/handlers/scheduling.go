@@ -2,15 +2,15 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
-	"github.com/alabama/final-project-alabama/server/scheduling/questions"
+	"github.com/alabama/final-project-alabama/server/scheduling/models"
 )
 
-func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// create office hour, get all office hours
 	// v1/officeHour
-
 	if r.Method == "POST" {
 		if user.Role != "instructor" {
 			http.Error(w, "Only instructor can create office hours", http.StatusForbidden)
@@ -18,14 +18,14 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 		}
 		if r.Header.Get("Content-Type") == "application/json" {
 			decoder := json.NewDecoder(r.Body)
-			var officeHour questions.OfficeHourSession
+			var officeHour models.NewOfficeHourSession
 			err := decoder.Decode(&officeHour)
 			if err != nil {
 				http.Error(w, "Request Body not in right format", http.StatusBadRequest)
 				return
 			}
-			if err := ctx.OfficeHourCollection.InsertOfficeHour(&officeHour, user.UserName); err != nil {
-				http.Error(w, "Error inserting office hours", http.StatusInternalServerError)
+			if err := ctx.OfficeHoursInsert(&officeHour, user.UserName); err != nil {
+				http.Error(w, "Error inserting office hours: "+err.Error(), http.StatusInternalServerError)
 				return
 			}
 			jsonStr, err := json.Marshal(officeHour)
@@ -42,7 +42,11 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 		}
 
 	} else if r.Method == "GET" {
-		officeHours := ctx.OfficeHourCollection.Get()
+		officeHours, err := ctx.GetOfficeHours()
+		if err != nil {
+			http.Error(w, "Error getting office hours", http.StatusInternalServerError)
+			return
+		}
 		jsonStr, err := json.Marshal(officeHours)
 		if err != nil {
 			http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
@@ -60,14 +64,26 @@ func (ctx *questions.Context) OfficeHourHandler(w http.ResponseWriter, r *http.R
 
 func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// /v1/officehour/{officeHourID}
+
+	fmt.Println("Arrived in SpecificOfficeHourHandler()")
+
 	params := r.URL.Query()
-	officeHourID := params.Get("officeHourID")
+	officeHourID := params.Get("oh")
 	if r.Method == "GET" {
-		// no need to check if user is authorized, all users are able to view all OH and questions.
-		if err := ctx.QuestionCollection.GetAll(officeHourID); err != nil {
-			http.Error(w, "Error getting all questions", http.StatusInternalServerError)
+		questions, err := ctx.GetAll(officeHourID)
+		if err != nil {
+			http.Error(w, "Error getting office hours", http.StatusInternalServerError)
 			return
 		}
+		jsonStr, err := json.Marshal(questions)
+		if err != nil {
+			http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonStr)
+
 	} else if r.Method == "POST" {
 		if user.Role != "student" {
 			http.Error(w, "Only a student can create a question", http.StatusForbidden)
@@ -77,23 +93,28 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 			http.Error(w, "Request Body must be in JSON", http.StatusUnsupportedMediaType)
 			return
 		}
+
 		decoder := json.NewDecoder(r.Body)
-		var question questions.Question
+		var question models.Question
 		err := decoder.Decode(&question)
 		if err != nil {
 			http.Error(w, "Request body in incorrect format", http.StatusBadRequest)
 			return
 		}
+
+		question.OfficeHourID = officeHourID
 		// the question contains the officeHourID already
-		if err := ctx.Insert(&question, user.UserName); err != nil {
+		if err := ctx.QuestionInsert(&question, user.UserName); err != nil {
 			http.Error(w, "Error inserting question", http.StatusInternalServerError)
 			return
 		}
+
 		jsonStr, err := json.Marshal(question)
 		if err != nil {
 			http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
 			return
 		}
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonStr)
@@ -111,11 +132,11 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 		// db call to get officeHourID and see if instructor of oh
 		// channel is part of this oh via db call. If it returns something,
 		// assume the instructor is part of the channel.
-		validInstructor := ctx.IsValidInstructor(officeHourID, user.UserName)
-		if len(validInstructor) == 0 {
-			http.Error(w, "Only an instructor of the office hour can patch the office hour", http.StatusForbidden)
-			return
-		}
+		// validInstructor := ctx.IsValidInstructor(officeHourID, user.UserName)
+		// if len(validInstructor) == 0 {
+		// 	http.Error(w, "Only an instructor of the office hour can patch the office hour", http.StatusForbidden)
+		// 	return
+		// }
 		// decode into updates struct when ready
 		/*
 			decoder := json.NewDecoder(r.Body)
@@ -166,7 +187,7 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (ctx *questions.Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// PATCH questions
 	// POST to add student to question
 	// GET (?) more info
@@ -174,11 +195,11 @@ func (ctx *questions.Context) SpecificQuestionHandler(w http.ResponseWriter, r *
 
 }
 
-func (ctx *questions.Context) TAHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) TAHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	//POST answering a question
 	//PATCH ?possible editing order and duration
 }
 
-func (ctx *questions.Context) FAQHandler(w http.ResponseWriter, r *http.Request, user *User) {
+func (ctx *Context) FAQHandler(w http.ResponseWriter, r *http.Request, user *User) {
 
 }
