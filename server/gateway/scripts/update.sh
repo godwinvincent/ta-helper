@@ -2,7 +2,7 @@ cd ./..
 
 docker rm -f gateway
 
-docker pull info441tapal/gateway
+# docker pull info441tapal/gateway
 
 docker run -d --name gateway \
 --network ta-pal \
