@@ -17,14 +17,14 @@ func (ctx *Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, us
 		}
 		if r.Header.Get("Content-Type") == "application/json" {
 			decoder := json.NewDecoder(r.Body)
-			var officeHour models.OfficeHourSession
+			var officeHour models.NewOfficeHourSession
 			err := decoder.Decode(&officeHour)
 			if err != nil {
 				http.Error(w, "Request Body not in right format", http.StatusBadRequest)
 				return
 			}
 			if err := ctx.OfficeHoursInsert(&officeHour, user.UserName); err != nil {
-				http.Error(w, "Error inserting office hours", http.StatusInternalServerError)
+				http.Error(w, "Error inserting office hours: "+err.Error(), http.StatusInternalServerError)
 				return
 			}
 			jsonStr, err := json.Marshal(officeHour)
@@ -76,6 +76,7 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 			http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
 			return
 		}
+		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonStr)
 
@@ -95,6 +96,7 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 			http.Error(w, "Request body in incorrect format", http.StatusBadRequest)
 			return
 		}
+		question.OfficeHourID = officeHourID
 		// the question contains the officeHourID already
 		if err := ctx.QuestionInsert(&question, user.UserName); err != nil {
 			http.Error(w, "Error inserting question", http.StatusInternalServerError)

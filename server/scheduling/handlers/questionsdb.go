@@ -21,7 +21,7 @@ import (
 //Get all question in office hour id
 func (ctx *Context) GetAllQuestions(officeHourID string) ([]models.Question, error) {
 	var results []models.Question
-	if err := ctx.QuestionCollection.Collection.Find(bson.M{"_id": bson.ObjectIdHex(officeHourID)}).All(&results); err != nil {
+	if err := ctx.QuestionCollection.Collection.Find(bson.M{"offHourID": officeHourID}).All(&results); err != nil {
 		return nil, err
 	}
 	return results, nil
@@ -53,6 +53,10 @@ func (ctx *Context) QuestionInsert(q *models.Question, creatorUsername string) e
 
 	// insert into DB
 	if err := qColl.Collection.Insert(q); err != nil {
+		return err
+	}
+
+	if err := oColl.Collection.Update(bson.M{"_id": bson.ObjectIdHex(q.OfficeHourID)}, bson.M{"$set": bson.M{"numQuestions": q.QuestionPosition}}); err != nil {
 		return err
 	}
 	return nil

@@ -8,12 +8,14 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-func (ctx *Context) OfficeHoursInsert(oh *models.OfficeHourSession, username string) error {
+func (ctx *Context) OfficeHoursInsert(oh *models.NewOfficeHourSession, username string) error {
 	if err := officeHoursIsClean(oh); err != nil {
 		return err
 	}
 	oh.TAs = append(oh.TAs, username)
-	ctx.OfficeHourCollection.Collection.Insert(oh)
+	if err := ctx.OfficeHourCollection.Collection.Insert(oh); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -34,6 +36,6 @@ func (ctx *Context) GetOfficeHours() ([]models.OfficeHourSession, error) {
 	return results, nil
 }
 
-func officeHoursIsClean(oh *models.OfficeHourSession) error {
+func officeHoursIsClean(oh *models.NewOfficeHourSession) error {
 	return nil
 }
