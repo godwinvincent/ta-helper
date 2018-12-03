@@ -26,6 +26,8 @@ mongo sh -c 'exec mongo mongo:27017'
     - `db.createCollection("users")`
     - `db.createCollection("questions")`
     - `db.<collection_name>.drop()`
+- Change user to be of type instructor
+    - `db.users.update({"email": "ben2@test.com"},{ $set : { role: "instructor"}});`
 
 
 
