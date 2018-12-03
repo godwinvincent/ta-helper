@@ -26,6 +26,7 @@ func (ctx *Context) UsersHandler(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 			user, err := newUser.ToUser()
+			user.Role = "student"
 			if err != nil {
 				http.Error(w, "Unable to create new user with provided details", http.StatusBadRequest)
 				return
