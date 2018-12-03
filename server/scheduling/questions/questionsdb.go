@@ -29,6 +29,12 @@ func (c *QuestionCollection) Insert(q *Question, username string) error {
 	return nil
 }
 
+func (c *QuestionCollection) GetAll(officeHourID string) error {
+	// db call to get all questions in given office hour
+
+	return nil
+}
+
 // Add a student to question
 
 // Remove Student from question
