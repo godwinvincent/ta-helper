@@ -104,16 +104,7 @@ func (ctx *questions.Context) SpecificOfficeHourHandler(w http.ResponseWriter, r
 	}
 }
 
-<<<<<<< HEAD
-// GET all questions for office hours
-// POST new question
-// PATCH Office hour name
-// DELETE Office hours
-
-func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Request, user *User) {
-=======
 func (ctx *questions.Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Request, user *User) {
->>>>>>> 0ee28d7715e258c436000b4ad83f8a5dd8af3e92
 	// PATCH questions
 	// POST to add student to question
 	// GET (?) more info

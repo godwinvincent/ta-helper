@@ -56,7 +56,7 @@ func (c *QuestionCollection) GetAll(officeHourID string) error {
 
 // Add a student to question
 func (ctx *Context) QuestionAddStudent(q *Question, studentUsername string) error {
-
+	return nil
 }
 
 // Remove Student from question
