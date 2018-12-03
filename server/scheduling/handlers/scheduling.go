@@ -23,11 +23,7 @@ func (ctx *Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, us
 				http.Error(w, "Request Body not in right format", http.StatusBadRequest)
 				return
 			}
-<<<<<<< HEAD
 			if err := ctx.OfficeHoursInsert(&officeHour, user.UserName); err != nil {
-=======
-			if err := ctx.OfficeHourCollection.InsertOfficeHour(&officeHour, user.UserName); err != nil {
->>>>>>> 6bc640aa1b3733df633be149d6c586f045450fce
 				http.Error(w, "Error inserting office hours", http.StatusInternalServerError)
 				return
 			}
