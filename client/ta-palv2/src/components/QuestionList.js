@@ -24,7 +24,7 @@ export default class QuestionList extends Component {
         questions[key].id = key;
         return questions[key];
       });
-      keyArray.sort((a,b) => a.time - b.time);
+      keyArray.sort((a,b) => a.questPos - b.questPos);
       questionItems = keyArray.map( each =>  <QuestionItem  key={each.id} 
         deletequestionCallback={this.props.deletequestionCallback} 
         editquestionCallback={this.props.editquestionCallback} question={each} 

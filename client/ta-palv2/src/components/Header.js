@@ -29,12 +29,7 @@ export default class Header extends React.Component {
         <Nav className="ml-auto" navbar>
           <NavItem>
             <NavLink>
-<<<<<<< HEAD
               <ChannelModal mode="create" buttonName="New Office Hours" buttonCallback={this.props.newOfficeHourCallback} />
-=======
-              <ChannelModal mode="create" buttonName="New Office Hours" 
-              buttonCallback={this.props.newChannelCallback} />
->>>>>>> d60c867bfc4e33adf056057cab0363df1234decb
             </NavLink>
           </NavItem>
           <NavItem>

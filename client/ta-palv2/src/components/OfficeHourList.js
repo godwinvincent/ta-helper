@@ -128,7 +128,7 @@ class OfficeHourItem extends Component {
     return (
       <ListGroupItem>
         <span onClick={(e) => this.handleClick(this.props.officeHour)}>
-        {"#" + this.props.officeHour.name + "   "}
+        {this.props.officeHour.name + "   "}
         </span>
         {/* {this.props.channel.creator.id === this.props.user.id ?
               <span>
