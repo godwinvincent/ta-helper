@@ -49,7 +49,6 @@ export default class QuestionModal extends React.Component {
               <Button color="primary" onClick={(e) => this.handleButton(e, false)}>Edit Question</Button>
               <Button color="secondary" onClick={this.toggle}>Cancel</Button>
             </ModalFooter>
-                      
         </Modal>
       </span>
     );

@@ -49,15 +49,17 @@ class QuestionItem extends Component {
     return (
       <div className="row py-4 bg-white border">
         <div className="col pl-4 pl-lg-1">
-          {/* <span className="handle">{question.creator.username} space</span> */}
-          {/* <span className="time"><Time value={question.createdAt} relative/></span> */}
+          <img src='./../imgs/up-arrow.png'></img>
+          <img src='./../imgs/down-arrow.png'></img>
           <div className="question">{question.questBody}</div>
         </div>
+        {this.props.user.role === 'instructor' ? 
+        '' : ''} 
         {/* {this.props.question.creator.id ===  user.id ?
         <span>
         <questionModal question={question} buttonCallback={this.props.editquestionCallback}></questionModal>
         <Button color="danger" className="float-right" onClick={(e) => this.deletequestionHandler()}>Delete</Button>
-        </span> : ''} */}
+        </span> : ''} */}}
       </div>      
     );
   }
