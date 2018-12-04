@@ -49,7 +49,7 @@ export default class SignUpForm extends Component {
               />
           </FormGroup>
 
-          {/* password */}
+          {/* password confirmation */}
           <FormGroup>
             <Label for="passwordConf">Password Confirmation</Label>
             <Input onChange = {e => this.handleChange(e)} id="passwordConf" 

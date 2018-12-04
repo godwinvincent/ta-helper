@@ -96,7 +96,9 @@ export default class OfficeHourList extends Component {
         return officeHours[key];
       });
       // keyArray.sort((a, b) => b.time - a.time);
-      officeHoursItems = keyArray.map(each => <OfficeHourItem key={each.id} user={this.state.user} deleteOfficeHourCallback={this.props.deleteOfficeHourCallback} officeHourClicked={(id) => this.officeHourClickHandler(id)} officeHour={each} />)
+      officeHoursItems = keyArray.map(each => <OfficeHourItem key={each.id} 
+        user={this.state.user} deleteOfficeHourCallback={this.props.deleteOfficeHourCallback} 
+        officeHourClicked={(id) => this.officeHourClickHandler(id)} officeHour={each} />)
     }
 
     return (this.state.redirect ?
