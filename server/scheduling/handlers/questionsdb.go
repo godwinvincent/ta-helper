@@ -40,7 +40,7 @@ func (ctx *Context) QuestionGetOne(questionID string) (models.Question, error) {
 
 // QuestionInsert inserts a question into the DB.
 // Must pass in username of the person who created the question.
-func (ctx *Context) QuestionInsert(q *models.Question, creatorUsername string) error {
+func (ctx *Context) QuestionInsert(q *models.NewQuestion, creatorUsername string) error {
 
 	qColl := ctx.QuestionCollection
 	oColl := ctx.OfficeHourCollection
@@ -156,7 +156,7 @@ func (ctx *Context) QuestionDelete(questionID string, userRole string) error {
 
 // ------------- Helper Functions -------------
 
-func questIsClean(q *models.Question) error {
+func questIsClean(q *models.NewQuestion) error {
 	// message body may not be too long
 	if len(q.QuestionBody) > models.MaxQuestLength {
 		return fmt.Errorf("question may not be longer than %d, it currently is %d", models.MaxQuestLength, len(q.QuestionBody))

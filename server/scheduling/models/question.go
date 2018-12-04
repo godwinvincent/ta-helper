@@ -23,9 +23,11 @@ type Question struct {
 // question safely, it allows us to control what fields
 // we want to accept.
 type NewQuestion struct {
-	OfficeHourID string `json:"offHourID" bson:"offHourID"`
-	QuestionBody string `json:"questBody" bson:"questBody"`
-	QuestionType string `json:"questType" bson:"questType"`
+	QuestionPosition int      `json:"questPos" bson:"questPos"`
+	OfficeHourID     string   `json:"offHourID" bson:"offHourID"`
+	QuestionBody     string   `json:"questBody" bson:"questBody"`
+	Students         []string `json:"students" bson:"students"`
+	QuestionType     string   `json:"questType" bson:"questType"`
 }
 
 // QuestionCollection represents a connection to the

@@ -95,7 +95,7 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 		}
 
 		decoder := json.NewDecoder(r.Body)
-		var question models.Question
+		var question models.NewQuestion
 		err := decoder.Decode(&question)
 		if err != nil {
 			http.Error(w, "Request body in incorrect format", http.StatusBadRequest)
