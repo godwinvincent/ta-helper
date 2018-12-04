@@ -43,12 +43,12 @@ class QuestionItem extends Component {
     this.props.deleteQuestionCallback(this.props.question.dbID)
   }
 
-  changeQuestionOrder(direction) {
-    
+  changeQuestionOrder(change) {
+    this.props.changeQuestionOrder(change, this.props.question.dbID)
   }
 
-  changeQuestionUsers(change) {
-
+  changeQuestionUsers(operation) {
+    this.props.changeQuestionOrder(this.props.question.dbID, operation)
   }
 
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Header from './Header';
 import OfficeHourList from './OfficeHourList';
+import './styles/Home.css'
 import { Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle, Button, Container, Row, Col } from 'reactstrap';
 import EmailVerifyForm from './EmailVerifyForm'
 
@@ -146,8 +147,12 @@ export default class Home extends Component {
                                     <CardSubtitle className="text-center">Making Office Hours Better!</CardSubtitle>
                                     <CardText className="text-center">Please Log In or Sign up to get Started</CardText>
                                     <div className="text-center">
-                                        <Link to="/login"><Button>Log In</Button></Link>
-                                        <Link to="/join"><Button>Sign Up</Button></Link>
+                                        <div>
+                                            <Link to="/login"><Button id='land-login'>Log In</Button></Link>
+                                        </div>
+                                        <div>
+                                            <Link to="/join"><Button id='land-signup'>Sign Up</Button></Link>
+                                        </div>
                                     </div>
                                 </CardBody>
                             </Card>

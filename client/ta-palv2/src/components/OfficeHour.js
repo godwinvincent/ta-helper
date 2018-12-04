@@ -136,10 +136,16 @@ export default class OfficeHour extends Component {
         })
     }
 
-    changeQuestionUsers(qID) {
+    changeQuestionUsers(qID, operation) {
         var auth = localStorage.getItem('Authorization');
+        var methodToUse = ""
+        if (operation === "add") {
+            methodToUse = "POST"
+        } else if (operation === "remove") {
+            methodToUse = "DELETE"
+        }
         fetch("http://localhost:80/v1/question/?qid="+qID, {
-            method: "POST",
+            method: methodToUse,
             headers: {
                 "Authorization": auth,
                 "Content-Type": "application/json",
@@ -162,7 +168,7 @@ export default class OfficeHour extends Component {
         (
             <div>
                 <Header showOptions={false}/>
-                <QuestionList questions={this.state.questions} currentUser={this.props.currentUser} deletequestionCallback={(id) => this.deleteQuestion(id)}  editQuestionCallback={(id, msg) => this.editquestion(id, msg)} id={this.state.id} />
+                <QuestionList questions={this.state.questions} currentUser={this.props.currentUser} deleteQuestionCallback={(id) => this.deleteQuestion(id)}  editQuestionCallback={(id, msg) => this.editQuestion(id, msg)} changeQuestionOrder={(change, qID) => this.changeQuestionOrder(change, qID)} changeQuestionUsers={(qID, operation) => this.changeQuestionUsers(qID, operation)} id={this.state.id} />
                 <QuestionBox currentUser={this.props.currentUser} id={this.state.id} />
                 <Websocket url={'wss://info441api.godwinv.com/v1/ws?auth=' + localStorage.getItem('Authorization')}
               onquestion={this.handleData.bind(this)}/>
