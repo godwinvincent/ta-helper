@@ -1,0 +1,25 @@
+
+body {
+	background:rgba(245,248,250,1);
+}
+
+header button {
+	position:absolute;
+	right:10px;
+	top: 10px;
+}
+
+.mesage-box {
+	background-color: rgb(229, 242, 247);
+}
+
+.message-item {
+	border-bottom:1px solid #d3d3d3;
+	padding:20px;
+	background-color: white;
+}
+
+
+.time {
+	color: #9d9d9d;
+}
