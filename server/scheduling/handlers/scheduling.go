@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/alabama/final-project-alabama/server/scheduling/models"
 )
 
+// OfficeHourHandler :
+//	- creates office hours
+//	- gets all office hours
 func (ctx *Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// create office hour, get all office hours
 	// v1/officeHour
@@ -63,10 +64,13 @@ func (ctx *Context) OfficeHourHandler(w http.ResponseWriter, r *http.Request, us
 	}
 }
 
+// SpecificOfficeHourHandler :
+//	- gets all questions from an office hour session
+//	- make a new question in an office hour session
+//	- update office hour session name
+//	- remove an office hour session
 func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	// /v1/officehour/{officeHourID}
-
-	fmt.Println("Arrived in SpecificOfficeHourHandler()")
 
 	params := r.URL.Query()
 	officeHourID := params.Get("oh")
@@ -173,17 +177,38 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 	}
 }
 
+// SpecificQuestionHandler :
+//	- Gets a single question
+//	- Patch: allows instructor to update a question
+//	- Del: remove student from a question
 func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Request, user *User) {
+	// get question ID
 	params := r.URL.Query()
 	questionID := params.Get("qid")
 	if questionID == "" {
 		http.Error(w, "empty qid", http.StatusBadRequest)
 		return
 	}
+
+	// begin routing
 	if r.Method == "GET" {
+		// Get a specific question
+		q, err := ctx.QuestionGetOne(questionID)
+		if err != nil {
+			http.Error(w, "failed to get question", 500)
+			return
+		}
+
+		jsonStr, err := json.Marshal(q)
+		if err != nil {
+			http.Error(w, "Error marshalling json response", http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonStr)
 
 	} else if r.Method == "PATCH" {
-		log.Println("In patch for sqh")
 		if user.Role != "instructor" {
 			http.Error(w, "Only instructors can edit questions", http.StatusForbidden)
 			return
@@ -194,11 +219,23 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 			http.Error(w, "Error decoding json body", http.StatusBadRequest)
 			return
 		}
+		if len(updates.Mode) == 0 || len(updates.Update) == 0 {
+			http.Error(w, "JSON must have <mode> and <body> with len longer than zero", http.StatusBadRequest)
+			return
+		}
+
+		// update question
 		switch updates.Mode {
 		case "body":
-			// ctx.UpdateQuestionBody(questionID, updates.Update)
+			if err := ctx.QuestionUpdate(questionID, "body", updates.Update); err != nil {
+				http.Error(w, "failed to update question body: "+err.Error(), 500)
+				return
+			}
 		case "type":
-			// ctx.UpdateQuestionType(questionID, updates.Update)
+			if err := ctx.QuestionUpdate(questionID, "type", updates.Update); err != nil {
+				http.Error(w, "failed to update question type: "+err.Error(), 500)
+				return
+			}
 		case "order":
 			if updates.Update == "up" {
 				if err := ctx.MoveQuestionUp(questionID); err != nil {
@@ -235,11 +272,17 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 
 }
 
+// TODO:
+//	-
+//	-
 func (ctx *Context) TAHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	//POST answering a question
 	//PATCH ?possible editing order and duration
 }
 
+// TODO:
+//	-
+//	-
 func (ctx *Context) FAQHandler(w http.ResponseWriter, r *http.Request, user *User) {
 
 }
