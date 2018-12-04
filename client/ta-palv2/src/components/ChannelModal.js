@@ -24,7 +24,7 @@ export default class ChannelModal extends React.Component {
   handleButton(event, priv){
     event.preventDefault();
     if (this.props.mode === "create") 
-      this.props.buttonCallback(this.state.channelName, this.state.channelDesc, priv)
+      this.props.buttonCallback(this.state.name)
     else 
       this.props.buttonCallback(this.props.channelID, this.state.channelName, this.state.channelDesc)
     this.setState({channelName:''})
@@ -38,28 +38,20 @@ export default class ChannelModal extends React.Component {
       <span>
         <Button className="float-right" onClick={this.toggle}> {this.props.buttonName}</Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-          <ModalHeader toggle={this.toggle}>Channel</ModalHeader>
+          <ModalHeader toggle={this.toggle}>Create Office Hours</ModalHeader>
           <ModalBody>
           <FormGroup>
-            <Label for="name">Channel Name</Label>
-            <Input onChange = {e => this.handleChange(e)} id="channelName" 
-              type="channelName" 
-              name="channelName"
-              />
-          </FormGroup>
-          <FormGroup>
-            <Label for="name">Channel Description</Label>
-            <Input onChange = {e => this.handleChange(e)} id="channelDesc" 
-              type="channelDesc" 
-              name="channelDesc"
+            <Label for="name">Name</Label>
+            <Input onChange = {e => this.handleChange(e)} id="name" 
+              type="name" 
+              name="name"
               />
           </FormGroup>
           </ModalBody>
          
             {this.props.mode === "create" ?
              <ModalFooter>  
-              <Button color="primary" onClick={(e) => this.handleButton(e, false)}>Create Channel</Button>
-              <Button color="primary" onClick={(e) => this.handleButton(e, true)}>Create Private Channel</Button>
+              <Button color="primary" onClick={(e) => this.handleButton(e)}>Create Office Hour</Button>
               <Button color="secondary" onClick={this.toggle}>Cancel</Button>
               </ModalFooter>
             :
