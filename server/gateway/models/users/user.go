@@ -24,7 +24,7 @@ type User struct {
 	FirstName      string `json:"firstName" bson:"firstName"`
 	LastName       string `json:"lastName" bson:"lastName"`
 	Role           string `json:"role" bson:"role"`
-	EmailActivated bool   `json:"-" bson:"emailActivated"` //never JSON encoded/decoded
+	EmailActivated bool   `json:"emailActivated" bson:"emailActivated"`
 	EmailVerifCode string `json:"-" bson:"emailVerifCode"`
 }
 
