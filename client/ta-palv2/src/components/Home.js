@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Header from './Header';
-import './styles/Home.css';
 import OfficeHourList from './OfficeHourList';
 import { Card, CardImg, CardText, CardBody, CardTitle, CardSubtitle, Button, Container, Row, Col } from 'reactstrap';
 
@@ -142,21 +141,16 @@ export default class Home extends Component {
                                 <CardBody>
                                     <CardTitle className="text-center">Welcome to TA-Pal!</CardTitle>
                                     <CardSubtitle className="text-center">Making Office Hours Better!</CardSubtitle>
-                                    <CardText className="text-center">Please Log In or Sign Up to get Started</CardText>
+                                    <CardText className="text-center">Please Log In or Sign up to get Started</CardText>
                                     <div className="text-center">
-                                        <div>
-                                            <Link to="/login"><Button id="land-login">Log In</Button></Link>
-                                        </div>
-                                        <div>
-                                            <Link to="/join"><Button id='land-signup'>Sign Up</Button></Link>
-                                        </div>
+                                        <Link to="/login"><Button>Log In</Button></Link>
+                                        <Link to="/join"><Button>Sign Up</Button></Link>
                                     </div>
                                 </CardBody>
                             </Card>
                         </Col>
                     </Row>
-                </Container>
-            )
+                </Container>)
         }
         return (content)
     }

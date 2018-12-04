@@ -29,7 +29,7 @@ export default class SignUpForm extends Component {
   
     /* SignUpForm#render() */
     render() {
-        return (this.props.redirect ? <Redirect to="/" /> :(
+        return (this.props.redirect ? <Redirect to="/" /> : (
         <form>
           {/* email */}
           <FormGroup>
