@@ -41,6 +41,7 @@ export default class OfficeHourList extends Component {
           this.setState({ officeHours: response });
         })
         .catch(function(error) {
+            localStorage.removeItem("Authorization")
             error.text().then(error => alert("error"))
         })
   }
