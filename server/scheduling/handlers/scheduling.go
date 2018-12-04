@@ -182,6 +182,13 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 	}
 	if r.Method == "GET" {
 
+	} else if r.Method == "POST" {
+		if err := ctx.QuestionAddStudent(questionID, user.UserName); err != nil {
+			http.Error(w, "Error adding student to question", http.StatusInternalServerError)
+			return
+		}
+		w.Write([]byte("added student to question"))
+
 	} else if r.Method == "PATCH" {
 		log.Println("In patch for sqh")
 		if user.Role != "instructor" {

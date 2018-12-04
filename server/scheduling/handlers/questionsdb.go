@@ -9,7 +9,6 @@ package handlers
 
 import (
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"log"
 
@@ -106,7 +105,7 @@ func (ctx *Context) QuestionRemStudent(questionID string, studentUsername string
 func (ctx *Context) GetAllQuestions(officeHourID string) ([]models.Question, error) {
 	// db call to get all questions in given office hour
 	var results []models.Question
-	if err := ctx.QuestionCollection.Collection.Find(bson.M{}).All(&results); err != nil {
+	if err := ctx.QuestionCollection.Collection.Find(bson.M{"offHourID": officeHourID}).All(&results); err != nil {
 		return nil, err
 	}
 	// convert each ID to a readable format
@@ -128,12 +127,12 @@ func (ctx *Context) QuestionDelete(questionID string, userRole string) error {
 	if err != nil {
 		return err
 	}
-	if userRole == "instructor" {
+	if userRole == "instructor" || len(q.Students) == 0 {
 		// delete question
-		if err := ctx.QuestionCollection.Collection.Remove(bson.M{"_id": bson.ObjectIdHex(questionID)}); err != nil {
+		if err := ctx.MoveQuestionsUpBelow(questionID); err != nil {
 			return err
 		}
-		if err := ctx.MoveQuestionsUpBelow(questionID); err != nil {
+		if err := ctx.QuestionCollection.Collection.Remove(bson.M{"_id": bson.ObjectIdHex(questionID)}); err != nil {
 			return err
 		}
 		if err := ctx.IncrementOfficeHours(q.OfficeHourID, -1); err != nil {
@@ -141,24 +140,7 @@ func (ctx *Context) QuestionDelete(questionID string, userRole string) error {
 		}
 
 	} else {
-		// get the question and check how many students are in it
-
-		if len(q.Students) == 0 {
-			log.Println("length is 0 removing")
-			if err := ctx.QuestionCollection.Collection.Remove(bson.M{"_id": bson.ObjectIdHex(questionID)}); err != nil {
-				return err
-			}
-			if err := ctx.MoveQuestionsUpBelow(questionID); err != nil {
-				return err
-			}
-			if err := ctx.IncrementOfficeHours(q.OfficeHourID, -1); err != nil {
-				return err
-			}
-
-		} else {
-			return errors.New("question still has students associated to it")
-		}
-
+		return fmt.Errorf("can't delete due to role or students in question"
 	}
 	return nil
 }
@@ -168,7 +150,7 @@ func (ctx *Context) MoveQuestionsUpBelow(questionID string) error {
 	if err != nil {
 		return err
 	}
-	if _, err := ctx.QuestionCollection.Collection.UpdateAll(bson.M{"$and": []bson.M{bson.M{"officeHourID": q.OfficeHourID}, bson.M{"questPos": bson.M{"$gt": q.QuestionPosition}}}}, bson.M{"$inc": bson.M{"questPos": -1}}); err != nil {
+	if _, err := ctx.QuestionCollection.Collection.UpdateAll(bson.M{"offHourID": q.OfficeHourID, "questPos": bson.M{"$gt": q.QuestionPosition}}, bson.M{"$inc": bson.M{"questPos": -1}}); err != nil {
 		return err
 	}
 	return nil
