@@ -208,6 +208,13 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonStr)
 
+	} else if r.Method == "POST" {
+		if err := ctx.QuestionAddStudent(questionID, user.UserName); err != nil {
+			http.Error(w, "Error adding student to question", http.StatusInternalServerError)
+			return
+		}
+		w.Write([]byte("added student to question"))
+
 	} else if r.Method == "PATCH" {
 		if user.Role != "instructor" {
 			http.Error(w, "Only instructors can edit questions", http.StatusForbidden)
@@ -255,29 +262,27 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 		w.Write([]byte("updated"))
 
 	} else if r.Method == "DELETE" {
-		if err := ctx.QuestionRemStudent(questionID, user.UserName); err != nil {
-			http.Error(w, "Error removing student from questions", http.StatusInternalServerError)
-			return
+		if user.Role == "student" {
+			if err := ctx.QuestionRemStudent(questionID, user.UserName); err != nil {
+				http.Error(w, "Error removing student from questions", http.StatusInternalServerError)
+				return
+			}
+			w.Write([]byte("removed student from question"))
+		} else if user.Role == "instructor" {
+			if err := ctx.QuestionDelete(questionID, "instructor"); err != nil {
+				http.Error(w, "error deleting question as instructor", http.StatusInternalServerError)
+				return
+			}
 		}
-		w.Write([]byte("removed student from question"))
+
 	} else {
 		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
 		return
 	}
 
 	// PATCH questions
-	// POST to add student to question
-	// GET (?) more info
-	// DEL question
+	// GET more info
 
-}
-
-// TODO:
-//	-
-//	-
-func (ctx *Context) TAHandler(w http.ResponseWriter, r *http.Request, user *User) {
-	//POST answering a question
-	//PATCH ?possible editing order and duration
 }
 
 // TODO:
