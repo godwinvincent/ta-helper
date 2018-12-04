@@ -79,6 +79,7 @@ func (nu *NewUser) ToUser() (*User, error) {
 	user.LastName = nu.LastName
 	user.Email = nu.Email
 	user.UserName = nu.UserName
+	user.EmailVerifCode = "-6668008"
 	text := []byte(strings.ToLower(strings.TrimSpace(user.Email)))
 	hasher := md5.New()
 	hasher.Write(text)
