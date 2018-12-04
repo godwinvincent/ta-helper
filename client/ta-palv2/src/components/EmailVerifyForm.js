@@ -21,16 +21,14 @@ export default class EmailVerifyForm extends Component {
         })
         .then(response => {
             if (response.status < 300) {
-                return response.json()
+              alert("Email sent succesfully!")
             } else {
                 throw response
             }
         })
-        .then(response => {
-            this.setState({ questions: response });
-        })
         .catch(function(error) {
-            error.text().then(error => alert("error"))
+          console.log(error)
+            // error.text().then(error => alert("error"))
         })
     }
     
