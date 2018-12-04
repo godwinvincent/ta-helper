@@ -52,7 +52,7 @@ func main() {
 	ticker := time.NewTicker(10 * time.Second)
 	go func() {
 		for range ticker.C {
-			event := &ServiceEvent{"scheduling", "/v1/officehours.*", "schedule:80", time.Now(), true}
+			event := &ServiceEvent{"scheduling", "/v1/(officehours)|(question).*", "schedule:80", time.Now(), true}
 			jsonString, err := json.Marshal(event)
 			if err != nil {
 				log.Fatal(err)
@@ -81,6 +81,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.Handle("/v1/officehours", handlers.EnsureAuth(ctx.OfficeHourHandler))
 	mux.Handle("/v1/officehours/", handlers.EnsureAuth(ctx.SpecificOfficeHourHandler))
+	mux.Handle("/v1/question/", handlers.EnsureAuth(ctx.SpecificQuestionHandler))
 	log.Printf("server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
 }

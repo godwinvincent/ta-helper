@@ -9,6 +9,15 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+func (ctx *Context) OfficeHoursGetOne(officeHourID string) (models.OfficeHourSession, error) {
+	var result models.OfficeHourSession
+
+	if err := ctx.OfficeHourCollection.Collection.Find(bson.M{"_id": bson.ObjectIdHex(officeHourID)}).One(&result); err != nil {
+		return result, err
+	}
+	return result, nil
+}
+
 func (ctx *Context) OfficeHoursInsert(oh *models.NewOfficeHourSession, username string) error {
 	if err := officeHoursIsClean(oh); err != nil {
 		return err
@@ -63,6 +72,14 @@ func (ctx *Context) RemoveOfficeHour(officeHourID string) error {
 	if err := ctx.OfficeHourCollection.Collection.Remove(bson.M{"_id": bson.ObjectIdHex(officeHourID)}); err != nil {
 		return err
 	}
+	return nil
+}
+
+func (ctx *Context) IncrementOfficeHours(officeHourID string, by int) error {
+	if err := ctx.OfficeHourCollection.Collection.Update(bson.M{"_id": bson.ObjectIdHex(officeHourID)}, bson.M{"$inc": bson.M{"numQuestions": by}}); err != nil {
+		return err
+	}
+	return nil
 }
 
 func officeHoursIsClean(oh *models.NewOfficeHourSession) error {

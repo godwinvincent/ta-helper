@@ -11,6 +11,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/alabama/final-project-alabama/server/scheduling/models"
 	"gopkg.in/mgo.v2/bson"
@@ -67,7 +68,7 @@ func (ctx *Context) QuestionInsert(q *models.NewQuestion, creatorUsername string
 		return err
 	}
 
-	if err := oColl.Collection.Update(bson.M{"_id": bson.ObjectIdHex(q.OfficeHourID)}, bson.M{"$set": bson.M{"numQuestions": q.QuestionPosition}}); err != nil {
+	if err := ctx.IncrementOfficeHours(q.OfficeHourID, 1); err != nil {
 		return err
 	}
 	return nil
@@ -90,21 +91,19 @@ func (ctx *Context) QuestionAddStudent(questionID string, studentUsername string
 // Takes in a the ID of the question and the username
 // of the student that should be removed.
 func (ctx *Context) QuestionRemStudent(questionID string, studentUsername string) error {
-	err2 := ctx.QuestionCollection.Collection.Update(bson.M{"_id": bson.ObjectIdHex(questionID)}, bson.M{"$pull": bson.M{"students": studentUsername}})
-
-	if err2 != nil {
-		return err2
+	if err := ctx.QuestionCollection.Collection.Update(bson.M{"_id": bson.ObjectIdHex(questionID)}, bson.M{"$pull": bson.M{"students": studentUsername}}); err != nil {
+		return err
 	}
 
 	// call delete on the question: it checks if no students are in it.
 	// if there are non then it deletes the question
-	ctx.QuestionRemStudent(questionID, "student")
+	ctx.QuestionDelete(questionID, "student")
 
 	return nil
 }
 
 // GetAll returns all questions from a specific Offie Hour Session
-func (ctx *Context) GetAll(officeHourID string) ([]models.Question, error) {
+func (ctx *Context) GetAllQuestions(officeHourID string) ([]models.Question, error) {
 	// db call to get all questions in given office hour
 	var results []models.Question
 	if err := ctx.QuestionCollection.Collection.Find(bson.M{}).All(&results); err != nil {
@@ -125,26 +124,95 @@ func (ctx *Context) GetAll(officeHourID string) ([]models.Question, error) {
 // Requirements: question must either have no students in it,
 // or the user must be an instructor
 func (ctx *Context) QuestionDelete(questionID string, userRole string) error {
+	q, err := ctx.QuestionGetOne(questionID)
+	if err != nil {
+		return err
+	}
 	if userRole == "instructor" {
 		// delete question
 		if err := ctx.QuestionCollection.Collection.Remove(bson.M{"_id": bson.ObjectIdHex(questionID)}); err != nil {
 			return err
 		}
+		if err := ctx.MoveQuestionsUpBelow(questionID); err != nil {
+			return err
+		}
+		if err := ctx.IncrementOfficeHours(q.OfficeHourID, -1); err != nil {
+			return err
+		}
 
 	} else {
 		// get the question and check how many students are in it
-		q, err := ctx.QuestionGetOne(questionID)
-		if err != nil {
-			return err
-		}
+
 		if len(q.Students) == 0 {
+			log.Println("length is 0 removing")
 			if err := ctx.QuestionCollection.Collection.Remove(bson.M{"_id": bson.ObjectIdHex(questionID)}); err != nil {
 				return err
 			}
+			if err := ctx.MoveQuestionsUpBelow(questionID); err != nil {
+				return err
+			}
+			if err := ctx.IncrementOfficeHours(q.OfficeHourID, -1); err != nil {
+				return err
+			}
+
 		} else {
 			return errors.New("question still has students associated to it")
 		}
 
+	}
+	return nil
+}
+
+func (ctx *Context) MoveQuestionsUpBelow(questionID string) error {
+	q, err := ctx.QuestionGetOne(questionID)
+	if err != nil {
+		return err
+	}
+	if _, err := ctx.QuestionCollection.Collection.UpdateAll(bson.M{"$and": []bson.M{bson.M{"officeHourID": q.OfficeHourID}, bson.M{"questPos": bson.M{"$gt": q.QuestionPosition}}}}, bson.M{"$inc": bson.M{"questPos": -1}}); err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func (ctx *Context) MoveQuestionUp(questionID string) error {
+	q, err := ctx.QuestionGetOne(questionID)
+	if q.QuestionPosition == 1 {
+		return fmt.Errorf("cannot move first question up")
+	}
+	if err != nil {
+		log.Println("failed in get")
+		return err
+	}
+	if err := ctx.QuestionCollection.Collection.Update(bson.M{"offHourID": q.OfficeHourID, "questPos": q.QuestionPosition - 1}, bson.M{"$inc": bson.M{"questPos": 1}}); err != nil {
+		log.Println("failed in update 1")
+		return err
+	}
+	// if err := ctx.QuestionCollection.Collection.Update(bson.M{"$and": []bson.M{bson.M{"officeHourID": q.OfficeHourID}, bson.M{"questPos": q.QuestionPosition - 1}}}, bson.M{"$inc": bson.M{"questPos": 1}}); err != nil {
+	// 	log.Println("failed in update 1")
+	// 	return err
+	// }
+	if err := ctx.QuestionCollection.Collection.Update(bson.M{"_id": bson.ObjectIdHex(questionID)}, bson.M{"$inc": bson.M{"questPos": -1}}); err != nil {
+		log.Println("failed in update 2")
+		return err
+	}
+	return nil
+}
+
+func (ctx *Context) MoveQuestionDown(questionID string) error {
+	q, err := ctx.QuestionGetOne(questionID)
+	oh, err := ctx.OfficeHoursGetOne(q.OfficeHourID)
+	if q.QuestionPosition == oh.NumQuestions {
+		return fmt.Errorf("cannot move last question down")
+	}
+	if err != nil {
+		return err
+	}
+	if err := ctx.QuestionCollection.Collection.Update(bson.M{"offHourID": q.OfficeHourID, "questPos": q.QuestionPosition + 1}, bson.M{"$inc": bson.M{"questPos": -1}}); err != nil {
+		return err
+	}
+	if err := ctx.QuestionCollection.Collection.Update(bson.M{"_id": bson.ObjectIdHex(questionID)}, bson.M{"$inc": bson.M{"questPos": 1}}); err != nil {
+		return err
 	}
 	return nil
 }

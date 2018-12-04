@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/alabama/final-project-alabama/server/scheduling/models"
@@ -70,7 +71,7 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 	params := r.URL.Query()
 	officeHourID := params.Get("oh")
 	if r.Method == "GET" {
-		questions, err := ctx.GetAll(officeHourID)
+		questions, err := ctx.GetAllQuestions(officeHourID)
 		if err != nil {
 			http.Error(w, "Error getting office hours", http.StatusInternalServerError)
 			return
@@ -161,17 +162,11 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 			http.Error(w, err.Error(), http.StatusForbidden)
 			return
 		}
-
-		/*
-			DB call to make delete
-			if err := ctx.Insert(&question, user.UserName); err != nil {
-				http.Error(w, "Error inserting question", http.StatusInternalServerError)
-				return
-			}
-			w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-			w.WriteHeader(http.StatusOK)
-			w.Write("Office Hour Channel Deleted")
-		*/
+		if err := ctx.RemoveOfficeHour(officeHourID); err != nil {
+			http.Error(w, "Error deleting office hours", http.StatusForbidden)
+			return
+		}
+		w.Write([]byte("Deleted Office Hours"))
 	} else {
 		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
 		return
@@ -179,6 +174,60 @@ func (ctx *Context) SpecificOfficeHourHandler(w http.ResponseWriter, r *http.Req
 }
 
 func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Request, user *User) {
+	params := r.URL.Query()
+	questionID := params.Get("qid")
+	if questionID == "" {
+		http.Error(w, "empty qid", http.StatusBadRequest)
+		return
+	}
+	if r.Method == "GET" {
+
+	} else if r.Method == "PATCH" {
+		log.Println("In patch for sqh")
+		if user.Role != "instructor" {
+			http.Error(w, "Only instructors can edit questions", http.StatusForbidden)
+			return
+		}
+		decoder := json.NewDecoder(r.Body)
+		var updates models.UpdateQuestion
+		if err := decoder.Decode(&updates); err != nil {
+			http.Error(w, "Error decoding json body", http.StatusBadRequest)
+			return
+		}
+		switch updates.Mode {
+		case "body":
+			// ctx.UpdateQuestionBody(questionID, updates.Update)
+		case "type":
+			// ctx.UpdateQuestionType(questionID, updates.Update)
+		case "order":
+			if updates.Update == "up" {
+				if err := ctx.MoveQuestionUp(questionID); err != nil {
+					http.Error(w, "Error moving question up: "+err.Error(), http.StatusInternalServerError)
+					return
+				}
+			} else if updates.Update == "down" {
+				if err := ctx.MoveQuestionDown(questionID); err != nil {
+					http.Error(w, "Error moving question down: "+err.Error(), http.StatusInternalServerError)
+					return
+				}
+			}
+		default:
+			http.Error(w, "Update mode not supported", http.StatusBadRequest)
+			return
+		}
+		w.Write([]byte("updated"))
+
+	} else if r.Method == "DELETE" {
+		if err := ctx.QuestionRemStudent(questionID, user.UserName); err != nil {
+			http.Error(w, "Error removing student from questions", http.StatusInternalServerError)
+			return
+		}
+		w.Write([]byte("removed student from question"))
+	} else {
+		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
+		return
+	}
+
 	// PATCH questions
 	// POST to add student to question
 	// GET (?) more info

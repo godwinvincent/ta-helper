@@ -31,8 +31,8 @@ type NewQuestion struct {
 }
 
 type UpdateQuestion struct {
-	QuestionBody string `json:"questBody" bson:"questBody"`
-	QuestionType string `json:"questType" bson:"questType"`
+	Mode   string `json:"mode"`
+	Update string `json:"update"`
 }
 
 // QuestionCollection represents a connection to the
