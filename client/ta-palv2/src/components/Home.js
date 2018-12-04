@@ -130,12 +130,12 @@ export default class Home extends Component {
         }
         else{
             content = this.props.user ?
-                this.props.user.emailActivated ?
+                // this.props.user.emailActivated ?
                 <div>
                     <Header newOfficeHourCallback={(name) => this.postNewOfficeHours(name)} signOutCallback={this.props.signOutCallback} showOptions={true} />
                     <OfficeHourList deleteChannelCallback={(channelID) => this.deleteChannel(channelID)} editChannelUserCallback={(channelID, userID, add) => this.editUserChannel(channelID, userID, add)} editChannelCallback={(id, channel, desc) => this.editChannel(id, channel, desc)} user={this.props.user} ref={this.ref} path="channelsList/" redirect="/channels/" />
-                </div> :
-                <EmailVerifyForm />
+                </div> 
+                // : <EmailVerifyForm />
             :
                 (<Container>
                     <Row>
