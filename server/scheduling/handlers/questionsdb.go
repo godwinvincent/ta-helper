@@ -140,7 +140,7 @@ func (ctx *Context) QuestionDelete(questionID string, userRole string) error {
 		}
 
 	} else {
-		return fmt.Errorf("can't delete due to role or students in question"
+		return fmt.Errorf("can't delete due to role or students in question")
 	}
 	return nil
 }

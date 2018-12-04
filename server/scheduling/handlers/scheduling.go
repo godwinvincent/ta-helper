@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/alabama/final-project-alabama/server/scheduling/models"
@@ -190,7 +189,6 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 		w.Write([]byte("added student to question"))
 
 	} else if r.Method == "PATCH" {
-		log.Println("In patch for sqh")
 		if user.Role != "instructor" {
 			http.Error(w, "Only instructors can edit questions", http.StatusForbidden)
 			return
@@ -202,8 +200,6 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 			return
 		}
 		switch updates.Mode {
-		case "body":
-			// ctx.UpdateQuestionBody(questionID, updates.Update)
 		case "type":
 			// ctx.UpdateQuestionType(questionID, updates.Update)
 		case "order":
