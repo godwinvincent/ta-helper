@@ -31,11 +31,31 @@ export default class EmailVerifyForm extends Component {
             // error.text().then(error => alert("error"))
         })
     }
-    
-  
-    handleVerify(event) {
-      event.preventDefault(); //don't submit
-    //   this.props.signInCallback(this.state.email, this.state.password);
+    handleVerify(event){
+      event.preventDefault();
+      var user = localStorage.getItem("User")
+      var auth = localStorage.getItem("Authorization")
+      console.log(auth, user)
+      fetch("http://localhost:80/v1/email/verify?c=" + this.state.code, {
+            method: "GET", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Authorization": auth
+            }
+        })
+        .then(response => {
+            if (response.status < 300) {
+              alert("email verified!, please log in again!")
+              localStorage.removeItem("Authorization")
+              window.location.reload(); 
+            } else {
+                throw response
+            }
+        })
+        .catch(function(error) {
+          console.log(error)
+            // error.text().then(error => alert("error"))
+        })
     }
     handleChange(event){
       let newState = {};
