@@ -26,8 +26,8 @@ export default class QuestionList extends Component {
       });
       keyArray.sort((a,b) => a.questPos - b.questPos);
       questionItems = keyArray.map( each =>  <QuestionItem  key={each.id} 
-        deletequestionCallback={this.props.deletequestionCallback} 
-        editquestionCallback={this.props.editquestionCallback} question={each} 
+        deleteQuestionCallback={this.props.deleteQuestionCallback} 
+        editQuestionCallback={this.props.editQuestionCallback} question={each} 
         currentUser={this.props.currentUser}/>)
     }
     return (
@@ -39,9 +39,21 @@ export default class QuestionList extends Component {
 
 
 class QuestionItem extends Component {
-  deletequestionHandler(){
-    this.props.deletequestionCallback(this.props.question.dbID)
+  deleteQuestionHandler() {
+    this.props.deleteQuestionCallback(this.props.question.dbID)
   }
+
+  changeQuestionOrder(direction) {
+    
+  }
+
+  changeQuestionUsers(change) {
+
+  }
+
+
+
+
   render() {
     let question = this.props.question;
     let user = JSON.parse(localStorage.getItem('User'));
@@ -49,18 +61,23 @@ class QuestionItem extends Component {
     return (
       <div className="row py-4 bg-white border">
         <div className="col pl-4 pl-lg-1">
-          <img src='./../imgs/up-arrow.png'></img>
-          <img src='./../imgs/down-arrow.png'></img>
+          <div id='arrows'>
+            <img className='arrow-buttons' src={window.location.origin + '/img/minus.svg'}></img>
+            <img className='arrow-buttons' src={window.location.origin + '/img/plus.jpg'}></img>
+            <img className='arrow-buttons' src={window.location.origin + '/img/down-arrow.png'}></img>
+            <img className='arrow-buttons' src={window.location.origin + '/img/up-arrow.png'}></img>
+          </div>
           <div className="question">{question.questBody}</div>
         </div>
+      </div>
+      /*
         {this.props.user.role === 'instructor' ? 
         '' : ''} 
         {/* {this.props.question.creator.id ===  user.id ?
         <span>
         <questionModal question={question} buttonCallback={this.props.editquestionCallback}></questionModal>
         <Button color="danger" className="float-right" onClick={(e) => this.deletequestionHandler()}>Delete</Button>
-        </span> : ''} */}}
-      </div>      
+        </span> : ''} */ 
     );
   }
 }

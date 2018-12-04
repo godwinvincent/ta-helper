@@ -92,7 +92,7 @@ export default class OfficeHour extends Component {
         this.update();
       }
 
-    deletequestion(id) {
+    deleteQuestion(id) {
         var auth = localStorage.getItem('Authorization');
         fetch("https://info441api.godwinv.com/v1/questions/"+id, {
             method: "DELETE",
@@ -113,12 +113,56 @@ export default class OfficeHour extends Component {
         })
     }
 
+    changeQuestionOrder(change, qID) {
+        var auth = localStorage.getItem('Authorization');
+        fetch("http://localhost:80/v1/question/?qid="+qID, {
+            method: "PATCH",
+            mode: "order", 
+            update: change,
+            headers: {
+                "Authorization": auth,
+                "Content-Type": "application/json",
+            }
+        })
+        .then(response => {
+            if (response.status < 300) {
+                // this.setState({question:''}); 
+            } else {
+                throw response
+            }
+        })
+        .catch(function(error) {
+            error.text().then(error => this.setState({ errorquestion: error }))
+        })
+    }
+
+    changeQuestionUsers(qID) {
+        var auth = localStorage.getItem('Authorization');
+        fetch("http://localhost:80/v1/question/?qid="+qID, {
+            method: "POST",
+            headers: {
+                "Authorization": auth,
+                "Content-Type": "application/json",
+            }
+        })
+        .then(response => {
+            if (response.status < 300) {
+                // this.setState({question:''}); 
+            } else {
+                throw response
+            }
+        })
+        .catch(function(error) {
+            error.text().then(error => this.setState({ errorquestion: error }))
+        })
+    }
+
     render() {
         return ( this.props.currentUser ?
         (
             <div>
                 <Header showOptions={false}/>
-                <QuestionList questions={this.state.questions} currentUser={this.props.currentUser} deletequestionCallback={(id) => this.deletequestion(id)}  editquestionCallback={(id, msg) => this.editquestion(id, msg)} id={this.state.id} />
+                <QuestionList questions={this.state.questions} currentUser={this.props.currentUser} deletequestionCallback={(id) => this.deleteQuestion(id)}  editQuestionCallback={(id, msg) => this.editquestion(id, msg)} id={this.state.id} />
                 <QuestionBox currentUser={this.props.currentUser} id={this.state.id} />
                 <Websocket url={'wss://info441api.godwinv.com/v1/ws?auth=' + localStorage.getItem('Authorization')}
               onquestion={this.handleData.bind(this)}/>

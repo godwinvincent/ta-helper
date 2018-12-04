@@ -10,10 +10,12 @@ export default class QuestionBox extends Component {
 
   post(body) {
     var questionData = {
-        "body": body
+        "questBody": body,
+        "questType": "short"
     }
     var auth = localStorage.getItem('Authorization');
-    fetch("http://localhost:80/v1/questions/{officeHourID}" + this.props.id, {
+    console.log('this.props.id', this.props.id)
+    fetch("http://localhost:80/v1/officehours/?oh=" + this.props.id, {
             method: "POST",
             mode: "cors",
             headers: {
@@ -30,8 +32,10 @@ export default class QuestionBox extends Component {
             }
         })
         .catch(function(error) {
-            error.text().then(error => this.setState({ errorMessage: error }))
-        })
+            error.text().then(error => 
+              console.log(error)
+              //this.setState( { errorMessage: error }))
+        )})
   }
 
   updateQuestion(event) {
