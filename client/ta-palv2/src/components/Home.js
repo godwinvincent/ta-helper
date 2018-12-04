@@ -21,21 +21,19 @@ export default class Home extends Component {
 
     }
 
-    postNewChannel(channel, desc, priv) {
-        var channelData = {
-            "name": channel,
-            "description": desc,
-            "private" : priv
+    postNewOfficeHours(name) {
+        var officeHourData = {
+            "name": name
         }
         var auth = localStorage.getItem('Authorization');
-        fetch("https://info441api.godwinv.com/v1/channels/", {
+        fetch("http://localhost:80/v1/officehours", {
             method: "POST",
             mode: "cors", 
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": auth
             },
-            body: JSON.stringify(channelData), 
+            body: JSON.stringify(officeHourData), 
         })
         .then(response => {
             if (response.status < 300) {
@@ -45,7 +43,7 @@ export default class Home extends Component {
             }
         })
         .catch(function(error) {
-            error.text().then(error => this.setState({ errorMessage: error }))
+            error.text().then(error => console.log(error))
         })
     }
 
@@ -132,7 +130,7 @@ export default class Home extends Component {
         else{
             content = this.props.user ?
             <div>
-                <Header newChannelCallback={(channel, desc, priv) => this.postNewChannel(channel, desc, priv)} signOutCallback={this.props.signOutCallback} showOptions={true} />
+                <Header newOfficeHourCallback={(name) => this.postNewOfficeHours(name)} signOutCallback={this.props.signOutCallback} showOptions={true} />
                 <OfficeHourList deleteChannelCallback={(channelID) => this.deleteChannel(channelID)} editChannelUserCallback={(channelID, userID, add) => this.editUserChannel(channelID, userID, add)} editChannelCallback={(id, channel, desc) => this.editChannel(id, channel, desc)} user={this.props.user} ref={this.ref} path="channelsList/" redirect="/channels/" />
             </div>
             :

@@ -118,8 +118,8 @@ export default class OfficeHour extends Component {
         (
             <div>
                 <Header showOptions={false}/>
-                <questionList questions={this.state.questions} currentUser={this.props.currentUser} deletequestionCallback={(id) => this.deletequestion(id)}  editquestionCallback={(id, msg) => this.editquestion(id, msg)} id={this.state.id} />
-                <questionBox currentUser={this.props.currentUser} id={this.state.id} />
+                <QuestionList questions={this.state.questions} currentUser={this.props.currentUser} deletequestionCallback={(id) => this.deletequestion(id)}  editquestionCallback={(id, msg) => this.editquestion(id, msg)} id={this.state.id} />
+                <QuestionBox currentUser={this.props.currentUser} id={this.state.id} />
                 <Websocket url={'wss://info441api.godwinv.com/v1/ws?auth=' + localStorage.getItem('Authorization')}
               onquestion={this.handleData.bind(this)}/>
             </div>
