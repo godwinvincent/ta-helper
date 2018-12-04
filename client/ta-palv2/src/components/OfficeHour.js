@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import MessageBox from './MessageBox'
-import MessageList from './MessageList'
+import QuestionBox from './QuestionBox'
+import QuestionList from './QuestionList'
 import Header from './Header'
 import { Redirect } from 'react-router-dom'
 import Websocket from 'react-websocket';
@@ -30,7 +30,7 @@ export default class OfficeHour extends Component {
                 }
             })
             .then(response => {
-              this.setState({ messages: response });
+              this.setState({ questions: response });
             })
             .catch(function(error) {
                 error.text().then(error => alert("error"))
@@ -54,19 +54,19 @@ export default class OfficeHour extends Component {
             }
         })
         .then(response => {
-            this.setState({ messages: response });
+            this.setState({ questions: response });
         })
         .catch(function(error) {
             error.text().then(error => alert("error"))
         })
     }
 
-    editMessage(id, msg) {
+    editQuestion(id, msg) {
         var msgData = {
            "body": msg
         }
         var auth = localStorage.getItem('Authorization');
-        fetch("https://info441api.godwinv.com/v1/messages/"+id, {
+        fetch("https://info441api.godwinv.com/v1/questions/"+id, {
             method: "PATCH",
             mode: "cors", 
             headers: {
@@ -77,24 +77,24 @@ export default class OfficeHour extends Component {
         })
         .then(response => {
             if (response.status < 300) {
-                // this.setState({message:''}); 
+                // this.setState({question:''}); 
             } else {
                 throw response
             }
         })
         .catch(function(error) {
-            error.text().then(error => this.setState({ errorMessage: error }))
+            error.text().then(error => this.setState({ errorquestion: error }))
         })
     }
 
     handleData(data) {
-        // var message = JSON.parse(Buffer.from(data, 'base64').toString('ascii'))
+        // var question = JSON.parse(Buffer.from(data, 'base64').toString('ascii'))
         this.update();
       }
 
-    deleteMessage(id) {
+    deletequestion(id) {
         var auth = localStorage.getItem('Authorization');
-        fetch("https://info441api.godwinv.com/v1/messages/"+id, {
+        fetch("https://info441api.godwinv.com/v1/questions/"+id, {
             method: "DELETE",
             mode: "cors", 
             headers: {
@@ -103,13 +103,13 @@ export default class OfficeHour extends Component {
         })
         .then(response => {
             if (response.status < 300) {
-                // this.setState({message:''}); 
+                // this.setState({question:''}); 
             } else {
                 throw response
             }
         })
         .catch(function(error) {
-            error.text().then(error => this.setState({ errorMessage: error }))
+            error.text().then(error => this.setState({ errorquestion: error }))
         })
     }
 
@@ -118,10 +118,10 @@ export default class OfficeHour extends Component {
         (
             <div>
                 <Header showOptions={false}/>
-                <MessageList messages={this.state.messages} currentUser={this.props.currentUser} deleteMessageCallback={(id) => this.deleteMessage(id)}  editMessageCallback={(id, msg) => this.editMessage(id, msg)} id={this.state.id} />
-                <MessageBox currentUser={this.props.currentUser} id={this.state.id} />
+                <questionList questions={this.state.questions} currentUser={this.props.currentUser} deletequestionCallback={(id) => this.deletequestion(id)}  editquestionCallback={(id, msg) => this.editquestion(id, msg)} id={this.state.id} />
+                <questionBox currentUser={this.props.currentUser} id={this.state.id} />
                 <Websocket url={'wss://info441api.godwinv.com/v1/ws?auth=' + localStorage.getItem('Authorization')}
-              onMessage={this.handleData.bind(this)}/>
+              onquestion={this.handleData.bind(this)}/>
             </div>
         ) :
         <Redirect to="/"/>

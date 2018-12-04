@@ -17,9 +17,11 @@ export default class Header extends React.Component {
       isOpen: !this.state.isOpen
     });
   }
+
   handleSignOut() {
     this.props.signOutCallback();
   }
+
   render() {
     let content = "";
     if (this.props.showOptions) {
@@ -27,7 +29,8 @@ export default class Header extends React.Component {
         <Nav className="ml-auto" navbar>
           <NavItem>
             <NavLink>
-              <ChannelModal mode="create" buttonName="New Office Hours" buttonCallback={this.props.newChannelCallback} />
+              <ChannelModal mode="create" buttonName="New Office Hours" 
+              buttonCallback={this.props.newChannelCallback} />
             </NavLink>
           </NavItem>
           <NavItem>
@@ -38,6 +41,7 @@ export default class Header extends React.Component {
         </Nav>
       </Collapse>)
     }
+
     return (
       <div>
         <Navbar color="faded" light expand="md">
