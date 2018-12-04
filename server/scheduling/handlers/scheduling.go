@@ -221,26 +221,24 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 		w.Write([]byte("updated"))
 
 	} else if r.Method == "DELETE" {
-		if err := ctx.QuestionRemStudent(questionID, user.UserName); err != nil {
-			http.Error(w, "Error removing student from questions", http.StatusInternalServerError)
-			return
+		if user.Role == "student" {
+			if err := ctx.QuestionRemStudent(questionID, user.UserName); err != nil {
+				http.Error(w, "Error removing student from questions", http.StatusInternalServerError)
+				return
+			}
+			w.Write([]byte("removed student from question"))
+		} else if role == "instructor" {
+			// TODO: DELETE QUESTION
 		}
-		w.Write([]byte("removed student from question"))
+
 	} else {
 		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
 		return
 	}
 
 	// PATCH questions
-	// POST to add student to question
-	// GET (?) more info
-	// DEL question
+	// GET more info
 
-}
-
-func (ctx *Context) TAHandler(w http.ResponseWriter, r *http.Request, user *User) {
-	//POST answering a question
-	//PATCH ?possible editing order and duration
 }
 
 func (ctx *Context) FAQHandler(w http.ResponseWriter, r *http.Request, user *User) {
