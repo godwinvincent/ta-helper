@@ -30,6 +30,11 @@ type NewQuestion struct {
 	QuestionType     string   `json:"questType" bson:"questType"`
 }
 
+type UpdateQuestion struct {
+	QuestionBody string `json:"questBody" bson:"questBody"`
+	QuestionType string `json:"questType" bson:"questType"`
+}
+
 // QuestionCollection represents a connection to the
 // question collection in our DB
 type QuestionCollection MongoCollection

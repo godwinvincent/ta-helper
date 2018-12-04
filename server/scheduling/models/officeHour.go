@@ -24,6 +24,10 @@ type NewOfficeHourSession struct {
 	TAs []string `json:"ta" bson:"ta"`
 }
 
+type UpdateOfficeHourSession struct {
+	Name string `json:"name" bson:"name"`
+}
+
 // OfficeHourCollection represents our connection to the
 // Office hours collection in our Databse
 type OfficeHourCollection MongoCollection
