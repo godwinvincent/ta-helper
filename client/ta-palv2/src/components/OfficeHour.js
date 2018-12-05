@@ -168,12 +168,20 @@ export default class OfficeHour extends Component {
         })
     }
 
+    sendNotification(students) {
+        // notification code goes here
+    }
+
     render() {
         return ( this.props.currentUser ?
         (
             <div>
                 <Header showOptions={false}/>
-                <QuestionList questions={this.state.questions} currentUser={this.props.currentUser} deleteQuestionCallback={(id) => this.deleteQuestion(id)}  editQuestionCallback={(id, msg) => this.editQuestion(id, msg)} changeQuestionOrder={(change, qID) => this.changeQuestionOrder(change, qID)} changeQuestionUsers={(qID, operation) => this.changeQuestionUsers(qID, operation)} id={this.state.id} />
+                <QuestionList questions={this.state.questions} currentUser={this.props.currentUser} 
+                deleteQuestionCallback={(id) => this.deleteQuestion(id)}  editQuestionCallback={(id, msg) => this.editQuestion(id, msg)} 
+                changeQuestionOrder={(change, qID) => this.changeQuestionOrder(change, qID)} 
+                changeQuestionUsers={(qID, operation) => this.changeQuestionUsers(qID, operation)} 
+                sendNotification={(students) => this.sendNotification(students)} id={this.state.id} />
                 <QuestionBox currentUser={this.props.currentUser} id={this.state.id} />
                 <Websocket url={'wss://info441api.godwinv.com/v1/ws?auth=' + localStorage.getItem('Authorization')}
               onquestion={this.handleData.bind(this)}/>
@@ -182,5 +190,4 @@ export default class OfficeHour extends Component {
         <Redirect to="/"/>
         )
     }
-
 }
