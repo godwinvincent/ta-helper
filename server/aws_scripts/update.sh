@@ -15,6 +15,9 @@ docker rm -f rabbit
 docker pull info441tapal/gateway
 docker pull info441tapal/schedule
 
+docker network rm ta-pal
+docker network create ta-pal
+
 docker run -d --name gateway \
 --network ta-pal \
 -e ADDR=$ADDR \
@@ -22,10 +25,12 @@ docker run -d --name gateway \
 -e SESSIONKEY=$SESSIONKEY \
 -e MONGOADDR=$MONGOADDR \
 -e MONGODB=$MONGODB \
--p 80:80 \
 -e TLSCERT=$TLSCERT \
 -e TLSKEY=$TLSKEY \
+-p 80:80 \
 info441tapal/gateway
+
+sleep 10
 
 # Run RabbitMQ
 docker run -d --hostname my-rabbit \
@@ -39,7 +44,6 @@ docker run -d \
 --name mongo \
 --network ta-pal \
 mongo
-
 
 # Run Redis
 docker run -d --name redis \

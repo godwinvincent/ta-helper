@@ -1,5 +1,8 @@
 #!/bin/sh
 
+
+########### DEPLOY TO AWS IN aws_scripts FOLDER ############
+
 # !!! Import critical environment variables and creds
 source exports.sh
 
