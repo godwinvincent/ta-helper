@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -127,11 +128,21 @@ func main() {
 	failOnError(err, "Failed to register a consumer")
 
 	// ------------- WebSockets -------------
+	type WebsocketMsg struct {
+		Usernames []string `json:"usernames"`
+		Event     string   `json:"event"`
+	}
+
 	go func() {
 		for d := range msgs {
-
-			// ctx.NotificationStore.Dispatch(d.UserId, d.Body) // FIXME: how did you set this up with your code when you made it?
-			// ctx.Connections.WebSocketsFireAway(d.Body)
+			// d is a single notifcation
+			tempMsg := WebsocketMsg{}
+			err := json.Unmarshal(d.Body, &tempMsg)
+			if err != nil {
+				log.Println("failed to unmarshal rabbit MQ msg in Gateway main.go")
+			} else {
+				ctx.NotificationStore.Dispatch(tempMsg.Usernames, []byte(tempMsg.Event))
+			}
 			d.Ack(false)
 		}
 	}()
@@ -140,7 +151,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/v1/users", ctx.UsersHandler)
 	mux.HandleFunc("/v1/sessions", ctx.SessionsHandler)
-	// mux.HandleFunc("/v1/ws", ctx.WebSocketConnectionHandler) //FIXME: why does WebsocketHandler take in a currSession *SessionState ?
+	mux.Handle("/v1/ws", ctx.EnsureAuth(ctx.WebSocketConnectionHandler))
 	mux.Handle("/v1/", ctx.ServiceDiscovery(sr))
 	wrappedMux := handlers.NewCorsHeader(mux)
 
