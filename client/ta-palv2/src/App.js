@@ -59,9 +59,9 @@ class App extends Component {
 
   }
 
-  async signin(email, password) {
+  async signin(netid, password) {
   var jsonData = {
-      "email": email,
+      "email": netid + "@uw.edu",
       "password": password
   }
   fetch("http://localhost:80/v1/sessions", {
@@ -172,7 +172,7 @@ class App extends Component {
             <Route path="/login" render={(routerProps) => (
               <div className="container">
                 <SignInForm {...routerProps}
-                  signInCallback={(e, p) => this.handleSignIn(e, p)}
+                  signInCallback={(n, p) => this.handleSignIn(n, p)}
                   redirect={this.state.shouldRedirect}
                 />
               </div>

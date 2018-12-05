@@ -13,7 +13,7 @@ export default class SignInForm extends Component {
   
     handleSignIn(event) {
       event.preventDefault(); //don't submit
-      this.props.signInCallback(this.state.email, this.state.password);
+      this.props.signInCallback(this.state.netid, this.state.password);
     }
     handleChange(event){
       let newState = {};
@@ -26,10 +26,10 @@ export default class SignInForm extends Component {
       return (this.props.redirect ? <Redirect to="/" /> :(
         <form>
           <FormGroup>
-            <Label for="email">Email</Label>
-            <Input onChange = {e => this.handleChange(e)} id="email" 
-              type="email" 
-              name="email"
+            <Label for="netid">Net ID</Label>
+            <Input onChange = {e => this.handleChange(e)} id="netid" 
+              type="netid" 
+              name="netid"
               />
           </FormGroup>
           <FormGroup>
