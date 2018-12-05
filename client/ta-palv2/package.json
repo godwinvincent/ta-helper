@@ -21,7 +21,7 @@
     "react-websocket": "^2.0.0",
     "reactstrap": "^5.0.0-alpha.4"
   },
-  "homepage": "https://info441client.godwinv.com/",
+  "homepage": "https://tapal.patrickold.me/",
   "scripts": {
     "predeploy": "npm run build",
     "start": "react-scripts start",

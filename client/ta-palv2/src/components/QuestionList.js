@@ -66,6 +66,7 @@ class QuestionItem extends Component {
           <div id='arrows'>
            {user.role == "instructor" ?
            <span>
+            <img className='arrow-buttons' src={window.location.origin + '/img/bell.jpg'} onClick={() => this.changeQuestionOrder('down')}></img>
             <img className='arrow-buttons' src={window.location.origin + '/img/down-arrow.png'} onClick={() => this.changeQuestionOrder('down')}></img>
             <img className='arrow-buttons' src={window.location.origin + '/img/up-arrow.png'} onClick={() => this.changeQuestionOrder('up')}></img>
             </span>

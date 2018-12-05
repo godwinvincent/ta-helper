@@ -190,7 +190,7 @@ class App extends Component {
             )} push/>
           </div>
         </Router>
-        <footer style={styles}>Created by Godwin Vincent</footer>
+        <footer style={styles}>Created by Ben, Godwin, and Patrick</footer>
         </div>
     );
   }
