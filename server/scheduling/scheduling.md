@@ -16,3 +16,7 @@ type WebsocketMsg struct {
 - "question-deleted" 
 - "office-new"
 - "office-deleted"
+
+**TA has begun answering a question**
+Hit the endpoint below and pass in the question being answered. User must be an instructor. It notifies all students in that question that it is their turn.
+Example: `POST /v1/ws/?qid=<QuestionID>`
