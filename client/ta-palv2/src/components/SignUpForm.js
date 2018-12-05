@@ -17,8 +17,9 @@ export default class SignUpForm extends Component {
   
     //handle signUp button
     handleSignUp(event) {
+      console.log(this.state.firstName)
       event.preventDefault(); //don't submit
-      this.props.signUpCallback(this.state.email, this.state.password, this.state.passwordConf, this.state.username, this.state.firstName, this.state.lastName);
+      this.props.signUpCallback(this.state.netid, this.state.password, this.state.passwordConf, this.state.firstName, this.state.lastName);
     }
   
     handleChange(event){
@@ -33,10 +34,10 @@ export default class SignUpForm extends Component {
         <form>
           {/* email */}
           <FormGroup>
-            <Label for="email">Email</Label>
-            <Input onChange = {e => this.handleChange(e)} id="email" 
-              type="email" 
-              name="email"
+            <Label for="email">UW NET ID</Label>
+            <Input onChange = {e => this.handleChange(e)} id="netid" 
+              type="netid" 
+              name="netid"
               />
           </FormGroup>
           
@@ -58,14 +59,6 @@ export default class SignUpForm extends Component {
               />
           </FormGroup>
   
-          {/* username */}
-          <FormGroup>
-            <Label htmlFor="username">Username</Label>
-            <Input onChange = {e => this.handleChange(e)} id="username" 
-              name="username"
-              />
-          </FormGroup>
-  
           {/* firstname */}
           <FormGroup>
             <Label htmlFor="firstname">First Name</Label>
@@ -76,7 +69,7 @@ export default class SignUpForm extends Component {
 
            {/* lastName */}
            <FormGroup>
-            <Label htmlFor="lastName">Username</Label>
+            <Label htmlFor="lastName">Last Name</Label>
             <Input onChange = {e => this.handleChange(e)} id="lastName" 
               name="lastName"
               />

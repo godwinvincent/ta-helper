@@ -17,15 +17,16 @@ class App extends Component {
     };
   }
 
-  async signup(email, password, passwordConf, username, firstName, lastName) {
+  async signup(netid, password, passwordConf, firstName, lastName) {
     var jsonData = {
-        "email": email,
+        "email": netid+"@uw.edu",
         "password": password,
         "passwordConf": passwordConf,
-        "userName": username,
+        "userName": netid,
         "firstName": firstName,
         "lastName": lastName
     }
+    console.log(jsonData)
     fetch("http://localhost:80/v1/users", {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, cors, *same-origin
@@ -58,9 +59,9 @@ class App extends Component {
 
   }
 
-  async signin(email, password) {
+  async signin(netid, password) {
   var jsonData = {
-      "email": email,
+      "email": netid + "@uw.edu",
       "password": password
   }
   fetch("http://localhost:80/v1/sessions", {
@@ -90,7 +91,7 @@ class App extends Component {
         this.setState({ loading: false });
       })
       .catch(function(error) {
-          error.text().then(error => this.setState({ errorMessage: error }))
+          error.text().then(error => alert(error))
       })
   }
 
@@ -171,7 +172,7 @@ class App extends Component {
             <Route path="/login" render={(routerProps) => (
               <div className="container">
                 <SignInForm {...routerProps}
-                  signInCallback={(e, p) => this.handleSignIn(e, p)}
+                  signInCallback={(n, p) => this.handleSignIn(n, p)}
                   redirect={this.state.shouldRedirect}
                 />
               </div>
@@ -179,7 +180,7 @@ class App extends Component {
             <Route path="/join" render={(routerProps) => (
               <div className="container">
                 <SignUpForm {...routerProps}
-                  signUpCallback={(e, p, h, a) => this.handleSignUp(e, p, h, a)}
+                  signUpCallback={(n, p, pc, fn, ln) => this.handleSignUp(n, p, pc, fn, ln)}
                   redirect={this.state.shouldRedirect}
                 />
               </div>
