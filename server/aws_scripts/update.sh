@@ -18,20 +18,6 @@ docker pull info441tapal/schedule
 docker network rm ta-pal
 docker network create ta-pal
 
-docker run -d --name gateway \
---network ta-pal \
--e ADDR=$ADDR \
--e REDISADDR=$REDISADDR \
--e SESSIONKEY=$SESSIONKEY \
--e MONGOADDR=$MONGOADDR \
--e MONGODB=$MONGODB \
--e TLSCERT=$TLSCERT \
--e TLSKEY=$TLSKEY \
--p 80:80 \
-info441tapal/gateway
-
-sleep 10
-
 # Run RabbitMQ
 docker run -d --hostname my-rabbit \
 --name rabbit \
@@ -50,3 +36,26 @@ docker run -d --name redis \
 --network ta-pal \
 -p 6379:6379 \
 redis
+
+# Run scheduling microservice
+docker run -d --name schedule \
+--network ta-pal \
+-e ADDR=$ADDR \
+-e REDISADDR=$REDISADDR \
+-e MONGOADDR=$MONGOADDR \
+-e MONGODB=$MONGODB \
+-e RABBITADDR=$RABBITADDR \
+info441tapal/schedule
+
+# Run API gateway
+docker run -d --name gateway \
+--network ta-pal \
+-e ADDR=$ADDR \
+-e REDISADDR=$REDISADDR \
+-e SESSIONKEY=$SESSIONKEY \
+-e MONGOADDR=$MONGOADDR \
+-e MONGODB=$MONGODB \
+-e TLSCERT=$TLSCERT \
+-e TLSKEY=$TLSKEY \
+-p 80:80 \
+info441tapal/gateway

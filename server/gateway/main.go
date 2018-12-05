@@ -24,8 +24,8 @@ func failOnError(err error, msg string) {
 //main is the main entry point for the server
 func main() {
 	// ------------- Important Variables -------------
-	// tlsKeyPath := reqEnv("TLSKEY")
-	// tlsCertPath := reqEnv("TLSCERT")
+	tlsKeyPath := reqEnv("TLSKEY")
+	tlsCertPath := reqEnv("TLSCERT")
 	sessionKey := reqEnv("SESSIONKEY")
 
 	addr := os.Getenv("ADDR")
@@ -156,8 +156,8 @@ func main() {
 	wrappedMux := handlers.NewCorsHeader(mux)
 
 	log.Printf("server is listening at %s...", addr)
-	// log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
-	log.Fatal(http.ListenAndServe(addr, wrappedMux))
+	log.Fatal(http.ListenAndServeTLS(addr, tlsCertPath, tlsKeyPath, wrappedMux))
+	//log.Fatal(http.ListenAndServe(addr, wrappedMux))
 }
 
 // ------------- Helper Functions -------------
