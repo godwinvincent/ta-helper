@@ -12,15 +12,14 @@ package handlers
 
 //User represents a user account in the database
 type User struct {
-	Email     string `json:"email" bson:"email"`
-	PassHash  []byte `json:"-" bson:"passHash"` //never JSON encoded/decoded
-	UserName  string `json:"username" bson:"username"`
-	FirstName string `json:"firstName" bson:"firstName"`
-	LastName  string `json:"lastName" bson:"lastName"`
-
-	EmailActivated bool   `json:"-" bson:"emailActivated"`
-	EmailVerifCode string `json:"-" bson:"emailVerifCode"`
+	Email          string `json:"email" bson:"email"`
+	PassHash       []byte `json:"-" bson:"passHash"` //never JSON encoded/decoded
+	UserName       string `json:"username" bson:"username"`
+	FirstName      string `json:"firstName" bson:"firstName"`
+	LastName       string `json:"lastName" bson:"lastName"`
 	Role           string `json:"role" bson:"role"`
+	EmailActivated bool   `json:"emailActivated" bson:"emailActivated"`
+	EmailVerifCode string `json:"-" bson:"emailVerifCode"`
 }
 
 // // GetByUserName retrives a user from the given collection and returns it as a User

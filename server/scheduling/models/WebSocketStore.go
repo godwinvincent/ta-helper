@@ -14,12 +14,19 @@ type WebsocketStore struct {
 	Queue   amqp.Queue
 }
 
-// SendNotifToRabbit sends a _____ message or struc of your choice
+// WebsocketMsg is a struct that we use to communicate through
+// Rabbit MQ.
+type WebsocketMsg struct {
+	Usernames []string `json:"usernames"`
+	Event     string   `json:"event"`
+}
+
+// SendNotifToRabbit sends a message
 // to RabbitMQ at the channel in the given WebsocketStore.
 // The consumer will need to deserialize the message.
-func (W *WebsocketStore) SendNotifToRabbit(jsonMsg string) error {
+func (W *WebsocketStore) SendNotifToRabbit(msg *WebsocketMsg) error {
 	// serialize notification
-	serializedMsg, errSer := serialize(jsonMsg)
+	serializedMsg, errSer := serialize(msg)
 	if errSer != nil {
 		return fmt.Errorf("failed to serialize rabbitMQ notifcation: %s", errSer)
 	}
@@ -41,7 +48,7 @@ func (W *WebsocketStore) SendNotifToRabbit(jsonMsg string) error {
 }
 
 // serializes a ____
-func serialize(msg string) ([]byte, error) {
+func serialize(msg *WebsocketMsg) ([]byte, error) {
 
 	result, err := json.Marshal(msg)
 	if err != nil {

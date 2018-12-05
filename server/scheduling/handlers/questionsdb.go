@@ -59,7 +59,38 @@ func (ctx *Context) GetAllQuestions(officeHourID string) ([]models.Question, err
 	return results, nil
 }
 
+// GetStudentsQuestion gets the students from a single question
+func (ctx *Context) GetStudentsQuestion(questionID string) ([]string, error) {
+	question, err := ctx.QuestionGetOne(questionID)
+	if err != nil {
+		return nil, err
+	}
+
+	return question.Students, nil
+
+}
+
 // --------------- Modify Questions ---------------
+
+// QuestionNotify notifies all the students in an office hour session
+// that one of the questions was either deleted or updated.
+func (ctx *Context) QuestionNotify(officeHourID string, updateType string) error {
+	if updateType != "question-new" && updateType != "question-deleted" {
+		return fmt.Errorf("error: updateType not supported in QuestionNotify(): %s", updateType)
+	}
+	usernames, err := ctx.OfficeHourGetAllStudents(officeHourID)
+	if err != nil {
+		return err
+	}
+
+	msg := models.WebsocketMsg{usernames, updateType}
+	if err := ctx.WebSocketStore.SendNotifToRabbit(&msg); err != nil {
+		return fmt.Errorf("failed to notify students it's their questions turn %s", err)
+	}
+
+	return nil
+
+}
 
 // QuestionInsert inserts a question into the DB.
 // Must pass in username of the person who created the question.
@@ -93,6 +124,10 @@ func (ctx *Context) QuestionInsert(q *models.NewQuestion, creatorUsername string
 	if err := ctx.IncrementOfficeHours(q.OfficeHourID, 1); err != nil {
 		return err
 	}
+
+	if err := ctx.QuestionNotify(q.OfficeHourID, "question-new"); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -119,6 +154,11 @@ func (ctx *Context) QuestionDelete(questionID string, userRole string) error {
 	} else {
 		return fmt.Errorf("can't delete due to role or students in question")
 	}
+
+	if err := ctx.QuestionNotify(q.OfficeHourID, "question-deleted"); err != nil {
+		return err
+	}
+
 	return nil
 }
 

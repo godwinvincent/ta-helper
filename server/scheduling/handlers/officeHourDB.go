@@ -9,6 +9,35 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// OfficeHourNotify sends out a notification to every single user
+// that there is a new or a deleted office hour session
+func (ctx *Context) OfficeHourNotify(updateType string) error {
+
+	// check that it is an accepted update type
+	if updateType != "office-new" && updateType != "office-deleted" {
+		return fmt.Errorf("error: updateType not supported in OfficeHourNotify(): %s", updateType)
+	}
+
+	// get every user in Mongo
+	var allUsers []User
+	if err := ctx.UsersCollection.Collection.Find(bson.M{}).All(&allUsers); err != nil {
+		return err
+	}
+
+	// make a slice of all usernames
+	allUsernames := make([]string, len(allUsers))
+	for i := 0; i < len(allUsernames); i++ {
+		allUsernames = append(allUsernames, allUsers[i].UserName)
+	}
+
+	msg := models.WebsocketMsg{allUsernames, updateType}
+	if err := ctx.WebSocketStore.SendNotifToRabbit(&msg); err != nil {
+		return fmt.Errorf("failed to notify students that OH have changed: %s", err)
+	}
+
+	return nil
+}
+
 // OfficeHourGetAllStudents gets all student usernames from an office hour session
 // where each student must be currently associated to at least one live question
 func (ctx *Context) OfficeHourGetAllStudents(officeHourID string) ([]string, error) {
@@ -56,6 +85,11 @@ func (ctx *Context) OfficeHoursInsert(oh *models.NewOfficeHourSession, username 
 	if err := ctx.OfficeHourCollection.Collection.Insert(oh); err != nil {
 		return err
 	}
+
+	if err := ctx.OfficeHourNotify("office-new"); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -102,6 +136,11 @@ func (ctx *Context) RemoveOfficeHour(officeHourID string) error {
 	if err := ctx.OfficeHourCollection.Collection.Remove(bson.M{"_id": bson.ObjectIdHex(officeHourID)}); err != nil {
 		return err
 	}
+
+	if err := ctx.OfficeHourNotify("office-deleted"); err != nil {
+		return err
+	}
+
 	return nil
 }
 

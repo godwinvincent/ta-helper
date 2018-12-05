@@ -286,6 +286,50 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 
 }
 
+// WebSocketConnectionHandler :
+//	- Post: if instructor: notifies all students in a question that it is their turn
+//		Example: /v1/ws/?qid=<QuestionID>
+func (ctx *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Request, user *User) {
+	if r.Method == "POST" {
+
+		// get question ID
+		params := r.URL.Query()
+		questionID := params.Get("qid")
+		if questionID == "" {
+			http.Error(w, "empty qid", http.StatusBadRequest)
+			return
+		}
+
+		// check that they're an instructor
+		if user.Role != "instructor" {
+			http.Error(w, "only instructors/TAs may notify students", http.StatusForbidden)
+			return
+		}
+
+		// get all usernames for a question
+		usernames, getErr := ctx.GetStudentsQuestion(questionID)
+		if getErr != nil {
+			http.Error(w, "error on notify students it's their questions turn: failed to get all usernames", 500)
+			return
+		}
+		// send to rabbit
+		msg := models.WebsocketMsg{usernames, "question-yourTurn"}
+		if err := ctx.WebSocketStore.SendNotifToRabbit(&msg); err != nil {
+			http.Error(w, "failed to notify students it's their questions turn", 500)
+			return
+		}
+
+		// respond
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("students notified"))
+
+	} else {
+		http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
+		return
+	}
+
+}
+
 // ---------------- Stretch Functions ----------------
 // TODO:
 //	-

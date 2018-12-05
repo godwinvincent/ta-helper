@@ -20,4 +20,5 @@ docker run -d --name schedule \
 -e REDISADDR=$REDISADDR \
 -e MONGOADDR=$MONGOADDR \
 -e MONGODB=$MONGODB \
+-e RABBITADDR=$RABBITADDR \
 info441tapal/schedule

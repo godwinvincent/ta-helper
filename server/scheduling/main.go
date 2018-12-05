@@ -32,6 +32,7 @@ func main() {
 
 	mongoAddr := getenv("MONGOADDR")
 	mongoDBName := getenv("MONGODB")
+	// rabbitAddr := getenv("RABBITADDR")
 
 	redisdb := redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
@@ -62,7 +63,7 @@ func main() {
 
 	// ---------------- RabbitMQ ----------------
 	// guide: https://www.rabbitmq.com/tutorials/tutorial-one-go.html
-	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	conn, err := amqp.Dial("amqp://guest:guest@rabbit:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
@@ -88,9 +89,12 @@ func main() {
 	// ---------------- Context ----------------
 	questionCollection := models.QuestionCollection{MongoConnection.GetCollection(mongoDBName, "questions")}
 	officeHoursCollection := models.OfficeHourCollection{MongoConnection.GetCollection(mongoDBName, "officeHours")}
+	usersCollection := models.UsersCollection{MongoConnection.GetCollection(mongoDBName, "users")}
+
 	ctx := handlers.Context{
 		QuestionCollection:   questionCollection,
 		OfficeHourCollection: officeHoursCollection,
+		UsersCollection:      usersCollection,
 		WebSocketStore:       w,
 	}
 
@@ -98,6 +102,7 @@ func main() {
 	mux.Handle("/v1/officehours", handlers.EnsureAuth(ctx.OfficeHourHandler))
 	mux.Handle("/v1/officehours/", handlers.EnsureAuth(ctx.SpecificOfficeHourHandler))
 	mux.Handle("/v1/question/", handlers.EnsureAuth(ctx.SpecificQuestionHandler))
+	mux.Handle("/v1/ws/", handlers.EnsureAuth(ctx.WebSocketConnectionHandler))
 	log.Printf("server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
 }
