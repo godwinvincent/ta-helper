@@ -7,3 +7,4 @@ server/.vscode/settings.json
 .DS_Store
 sendgrid.env
 dump.rdb
+node_modules
