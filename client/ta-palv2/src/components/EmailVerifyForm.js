@@ -47,6 +47,7 @@ export default class EmailVerifyForm extends Component {
             if (response.status < 300) {
               alert("email verified!, please log in again!")
               localStorage.removeItem("Authorization")
+              localStorage.removeItem("User")
               window.location.reload(); 
             } else {
                 throw response
