@@ -114,15 +114,19 @@ export default class OfficeHour extends Component {
     }
 
     changeQuestionOrder(change, qID) {
+        var bodyObj = {
+            "mode" : "order",
+            "update" : change
+        }
         var auth = localStorage.getItem('Authorization');
         fetch("http://localhost:80/v1/question/?qid="+qID, {
             method: "PATCH",
-            mode: "order", 
-            update: change,
+            mode: "cors", 
             headers: {
                 "Authorization": auth,
                 "Content-Type": "application/json",
-            }
+            },
+            body: JSON.stringify(bodyObj)
         })
         .then(response => {
             if (response.status < 300) {
@@ -132,7 +136,8 @@ export default class OfficeHour extends Component {
             }
         })
         .catch(function(error) {
-            error.text().then(error => this.setState({ errorquestion: error }))
+            // error.text().then(error => this.setState({ errorquestion: error }))
+            console.log(error)
         })
     }
 

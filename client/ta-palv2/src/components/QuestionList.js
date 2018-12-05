@@ -27,7 +27,9 @@ export default class QuestionList extends Component {
       keyArray.sort((a,b) => a.questPos - b.questPos);
       questionItems = keyArray.map( each =>  <QuestionItem  key={each.id} 
         deleteQuestionCallback={this.props.deleteQuestionCallback} 
-        editQuestionCallback={this.props.editQuestionCallback} question={each} 
+        editQuestionCallback={this.props.editQuestionCallback} question={each}
+        changeQuestionOrder={this.props.changeQuestionOrder} 
+        changeQuestionUsers={this.props.changeQuestionUsers}
         currentUser={this.props.currentUser}/>)
     }
     return (
@@ -48,7 +50,7 @@ class QuestionItem extends Component {
   }
 
   changeQuestionUsers(operation) {
-    this.props.changeQuestionOrder(this.props.question.dbID, operation)
+    this.props.changeQuestionUsers(this.props.question.dbID, operation)
   }
 
 
@@ -62,22 +64,24 @@ class QuestionItem extends Component {
       <div className="row py-4 bg-white border">
         <div className="col pl-4 pl-lg-1">
           <div id='arrows'>
-            <img className='arrow-buttons' src={window.location.origin + '/img/minus.svg'}></img>
-            <img className='arrow-buttons' src={window.location.origin + '/img/plus.jpg'}></img>
-            <img className='arrow-buttons' src={window.location.origin + '/img/down-arrow.png'}></img>
-            <img className='arrow-buttons' src={window.location.origin + '/img/up-arrow.png'}></img>
+           {user.role == "instructor" ?
+           <span>
+            <img className='arrow-buttons' src={window.location.origin + '/img/down-arrow.png'} onClick={() => this.changeQuestionOrder('down')}></img>
+            <img className='arrow-buttons' src={window.location.origin + '/img/up-arrow.png'} onClick={() => this.changeQuestionOrder('up')}></img>
+            </span>
+           : 
+           <span>
+             {question.students.includes(user.username) ? 
+             <img className='arrow-buttons' src={window.location.origin + '/img/minus.svg'} onClick={() => this.changeQuestionUsers('remove')}></img>
+            :
+            <img className='arrow-buttons' src={window.location.origin + '/img/plus.jpg'} onClick={() => this.changeQuestionUsers('add')}></img> 
+            }
+            </span>
+            }
           </div>
           <div className="question">{question.questBody}</div>
         </div>
       </div>
-      /*
-        {this.props.user.role === 'instructor' ? 
-        '' : ''} 
-        {/* {this.props.question.creator.id ===  user.id ?
-        <span>
-        <questionModal question={question} buttonCallback={this.props.editquestionCallback}></questionModal>
-        <Button color="danger" className="float-right" onClick={(e) => this.deletequestionHandler()}>Delete</Button>
-        </span> : ''} */ 
     );
   }
 }
