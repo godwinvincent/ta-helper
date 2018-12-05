@@ -11,6 +11,7 @@ import (
 	"github.com/alabama/final-project-alabama/server/scheduling/handlers"
 	"github.com/alabama/final-project-alabama/server/scheduling/models"
 	"github.com/go-redis/redis"
+	"github.com/streadway/amqp"
 )
 
 type ServiceEvent struct {
@@ -19,17 +20,6 @@ type ServiceEvent struct {
 	Address       string    `json:"address"`
 	LastHeartbeat time.Time `json:"lastHeartbeat"`
 	Priviledged   bool      `json:"priviledged"`
-}
-
-// getenv retrieves the enviornment variable.
-// If it fails to find it, main.go will log the issue
-// and exit.
-func getenv(key string) string {
-	value := os.Getenv(key)
-	if len(value) == 0 {
-		log.Fatalf("Error: main.go failed to retrieve env variable: %s\n", key)
-	}
-	return value
 }
 
 //main is the main entry point for the server
@@ -70,12 +60,38 @@ func main() {
 	}
 	fmt.Println("Successfully connected to Mongo!")
 
-	// Context
+	// ---------------- RabbitMQ ----------------
+	// guide: https://www.rabbitmq.com/tutorials/tutorial-one-go.html
+	conn, err := amqp.Dial("amqp://guest:guest@localhost:5672/")
+	failOnError(err, "Failed to connect to RabbitMQ")
+	defer conn.Close()
+
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
+
+	q, err := ch.QueueDeclare(
+		"MsgQueue", // name
+		false,      // durable
+		false,      // delete when unused
+		false,      // exclusive
+		false,      // no-wait
+		nil,        // arguments
+	)
+	failOnError(err, "Failed to declare a queue")
+
+	w := models.WebsocketStore{
+		Channel: ch,
+		Queue:   q,
+	}
+
+	// ---------------- Context ----------------
 	questionCollection := models.QuestionCollection{MongoConnection.GetCollection(mongoDBName, "questions")}
 	officeHoursCollection := models.OfficeHourCollection{MongoConnection.GetCollection(mongoDBName, "officeHours")}
 	ctx := handlers.Context{
 		QuestionCollection:   questionCollection,
 		OfficeHourCollection: officeHoursCollection,
+		WebSocketStore:       w,
 	}
 
 	mux := http.NewServeMux()
@@ -84,4 +100,23 @@ func main() {
 	mux.Handle("/v1/question/", handlers.EnsureAuth(ctx.SpecificQuestionHandler))
 	log.Printf("server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
+}
+
+// ---------------- Helper Functions ----------------
+
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+	}
+}
+
+// getenv retrieves the enviornment variable.
+// If it fails to find it, main.go will log the issue
+// and exit.
+func getenv(key string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		log.Fatalf("Error: main.go failed to retrieve env variable: %s\n", key)
+	}
+	return value
 }

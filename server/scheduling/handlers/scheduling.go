@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/alabama/final-project-alabama/server/scheduling/models"
@@ -285,9 +286,18 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 
 }
 
+// ---------------- Stretch Functions ----------------
 // TODO:
 //	-
 //	-
 func (ctx *Context) FAQHandler(w http.ResponseWriter, r *http.Request, user *User) {
 
+}
+
+// ---------------- Helper Functions ----------------
+
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+	}
 }

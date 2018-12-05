@@ -9,6 +9,36 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// OfficeHourGetAllStudents gets all student usernames from an office hour session
+// where each student must be currently associated to at least one live question
+func (ctx *Context) OfficeHourGetAllStudents(officeHourID string) ([]string, error) {
+	//map of usernames, helps us not have duplicates
+	m := make(map[string]bool, 0)
+	var result []string
+
+	// TODO: ideally we'd not get each question, we'd only get the student field:
+	// https://stackoverflow.com/questions/31116528/select-column-from-mongodb-in-golang-using-mgo
+	// Get all questions from the office hour
+	allQuestions, allErr := ctx.GetAllQuestions(officeHourID)
+	if allErr != nil {
+		return nil, allErr
+	}
+
+	// get student usernames from each question
+	// make sure each username appears in result only once
+	for _, quest := range allQuestions {
+		for _, user := range quest.Students {
+			m[user] = true
+		}
+	}
+
+	for username := range m {
+		result = append(result, username)
+	}
+
+	return result, nil
+}
+
 func (ctx *Context) OfficeHoursGetOne(officeHourID string) (models.OfficeHourSession, error) {
 	var result models.OfficeHourSession
 
@@ -82,10 +112,12 @@ func (ctx *Context) IncrementOfficeHours(officeHourID string, by int) error {
 	return nil
 }
 
+// TODO:
 func officeHoursIsClean(oh *models.NewOfficeHourSession) error {
 	return nil
 }
 
+// TODO:
 func cleanUpdate(oh *models.UpdateOfficeHourSession) error {
 	return nil
 }
