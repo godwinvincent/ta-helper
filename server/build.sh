@@ -8,6 +8,7 @@ cd ./scheduling
 # ----- Build -----
 GOOS=linux go build
 docker build -t info441tapal/schedule .
+docker push info441tapal/schedule
 go clean
 
 
