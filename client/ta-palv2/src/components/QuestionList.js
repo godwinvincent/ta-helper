@@ -30,6 +30,7 @@ export default class QuestionList extends Component {
         editQuestionCallback={this.props.editQuestionCallback} question={each}
         changeQuestionOrder={this.props.changeQuestionOrder} 
         changeQuestionUsers={this.props.changeQuestionUsers}
+        sendNotification={this.props.sendNotification}
         currentUser={this.props.currentUser}/>)
     }
     return (
@@ -54,7 +55,7 @@ class QuestionItem extends Component {
   }
 
   sendNotification() {
-    this.props.sendNotification(this.props.question.students)
+    this.props.sendNotification(this.props.question.dbID)
   }
 
 

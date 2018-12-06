@@ -167,7 +167,7 @@ class App extends Component {
               return <Home user={this.state.user} signOutCallback = {() => this.handleSignOut()} loading={this.state.loading} />
             }} />
             <Route exact path="/officeHour" render={() => {
-              return <Home user={this.state.user} signOutCallback = {() => this.handleSignOut()} loading={this.state.loading}/>
+              return <Home user={this.state.user} signOutCallback = {() => this.handleSignOut()} loading={this.state.loading} />
             }} />
             <Route path="/login" render={(routerProps) => (
               <div className="container">

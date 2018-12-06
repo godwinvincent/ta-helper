@@ -6,3 +6,4 @@ sendgrid.env
 dump.rdb
 node_modules/
 *.pem
+build/
