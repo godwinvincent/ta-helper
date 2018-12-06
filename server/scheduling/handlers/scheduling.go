@@ -265,6 +265,7 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 	} else if r.Method == "DELETE" {
 		if user.Role == "student" {
 			if err := ctx.QuestionRemStudent(questionID, user.UserName); err != nil {
+				log.Printf("Error removing student from questions: %s", err)
 				http.Error(w, "Error removing student from questions", http.StatusInternalServerError)
 				return
 			}

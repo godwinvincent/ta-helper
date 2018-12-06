@@ -94,6 +94,7 @@ func (ctx *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Re
 	// TODO: change accepted origin URL when deploying to
 	if r.Header.Get("Origin") != "http://localhost:3000" {
 		http.Error(w, "Websocket Connection Refused, bad origin", 403)
+		log.Printf("websocket connection failed, bad origin: %s", r.Header.Get("Origin"))
 		return
 	}
 	conn, err := websocket.Upgrade(w, r, w.Header(), 1024, 1024)
