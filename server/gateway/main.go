@@ -34,8 +34,8 @@ func main() {
 	mongoDBName := reqEnv("MONGODB")
 
 	if len(addr) == 0 {
-		// addr = ":443"
-		addr = ":80"
+		addr = ":443"
+		// addr = ":80"
 	}
 
 	// ------------- Structs -------------
