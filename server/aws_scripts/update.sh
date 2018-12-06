@@ -60,5 +60,6 @@ docker run -d --name gateway \
 -e MONGODB=$MONGODB \
 -e TLSCERT=$TLSCERT \
 -e TLSKEY=$TLSKEY \
+-v /etc/letsencrypt:/etc/letsencrypt:ro \
 -p 80:80 \
 info441tapal/gateway
