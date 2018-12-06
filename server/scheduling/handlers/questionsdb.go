@@ -83,6 +83,11 @@ func (ctx *Context) QuestionNotify(officeHourID string, updateType string) error
 	if err != nil {
 		return err
 	}
+	tas, err := ctx.OfficeHourGetAllTAs(officeHourID)
+	if err != nil {
+		return err
+	}
+	usernames = append(usernames, tas...)
 	log.Println(usernames)
 	msg := models.WebsocketMsg{usernames, updateType}
 	if err := ctx.WebSocketStore.SendNotifToRabbit(&msg); err != nil {

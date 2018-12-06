@@ -71,6 +71,14 @@ func (ctx *Context) OfficeHourGetAllStudents(officeHourID string) ([]string, err
 	return result, nil
 }
 
+func (ctx *Context) OfficeHourGetAllTAs(officeHourID string) ([]string, error) {
+	oh, err := ctx.OfficeHoursGetOne(officeHourID)
+	if err != nil {
+		return nil, err
+	}
+	return oh.TAs, nil
+}
+
 func (ctx *Context) OfficeHoursGetOne(officeHourID string) (models.OfficeHourSession, error) {
 	var result models.OfficeHourSession
 
