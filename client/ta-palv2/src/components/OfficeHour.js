@@ -88,7 +88,8 @@ export default class OfficeHour extends Component {
     }
 
     handleData(data) {
-        // var question = JSON.parse(Buffer.from(data, 'base64').toString('ascii'))
+        var question = Buffer.from(data, 'base64').toString('ascii')
+        console.log(question)
         this.update();
       }
 
@@ -185,7 +186,7 @@ export default class OfficeHour extends Component {
                 sendNotification={(students) => this.sendNotification(students)} id={this.state.id} />
                 { userPull.role == "student" ?
                 <QuestionBox currentUser={this.props.currentUser} id={this.state.id} /> : ""}
-                <Websocket url={'wss://info441api.godwinv.com/v1/ws?auth=' + localStorage.getItem('Authorization')}
+                <Websocket url={'wss://tapalapi.patrickold.me/v1/ws?auth=' + localStorage.getItem('Authorization')}
               onquestion={this.handleData.bind(this)}/>
             </div>
         ) :
