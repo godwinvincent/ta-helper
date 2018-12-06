@@ -27,7 +27,7 @@ export default class Home extends Component {
             "name": name
         }
         var auth = localStorage.getItem('Authorization');
-        fetch("http://localhost:80/v1/officehours", {
+        fetch("https://tapalapi.patrickold.me/v1/officehours", {
             method: "POST",
             mode: "cors", 
             headers: {

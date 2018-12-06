@@ -23,7 +23,7 @@ export default class OfficeHourList extends Component {
   componentDidMount() {
     var auth = localStorage.getItem('Authorization');
     this.setState({user : JSON.parse(localStorage.getItem('User'))})
-    fetch("http://localhost:80/v1/officehours", {
+    fetch("https://tapalapi.patrickold.me/v1/officehours", {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, cors, *same-origin
             headers: {
@@ -49,7 +49,7 @@ export default class OfficeHourList extends Component {
   update(){
     var auth = localStorage.getItem('Authorization');
     this.setState({user : JSON.parse(localStorage.getItem('User'))})
-    fetch("http://localhost:80/v1/officehours", {
+    fetch("https://tapalapi.patrickold.me/v1/officehours", {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, cors, *same-origin
             headers: {

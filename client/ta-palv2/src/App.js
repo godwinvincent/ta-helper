@@ -64,7 +64,7 @@ class App extends Component {
       "email": netid + "@uw.edu",
       "password": password
   }
-  fetch("http://localhost:80/v1/sessions", {
+  fetch("https://tapalapi.patrickold.me/v1/sessions", {
           method: "POST", // *GET, POST, PUT, DELETE, etc.
           mode: "cors", // no-cors, cors, *same-origin
           headers: {
@@ -97,7 +97,7 @@ class App extends Component {
 
   async signout() {
     var auth = localStorage.getItem('Authorization');
-    fetch("http://localhost:80/v1/sessions/mine", {
+    fetch("https://tapalapi.patrickold.me/v1/sessions/mine", {
             method: "DELETE", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, cors, *same-origin
             headers: {

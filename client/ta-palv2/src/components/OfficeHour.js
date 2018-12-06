@@ -15,7 +15,7 @@ export default class OfficeHour extends Component {
     }
     componentDidMount(){
         var auth = localStorage.getItem('Authorization');
-        fetch("http://localhost:80/v1/officehours/?oh=" + this.state.id, {
+        fetch("https://tapalapi.patrickold.me/v1/officehours/?oh=" + this.state.id, {
                 method: "GET", // *GET, POST, PUT, DELETE, etc.
                 mode: "cors", // no-cors, cors, *same-origin
                 headers: {
@@ -39,7 +39,7 @@ export default class OfficeHour extends Component {
 
     update(){
     var auth = localStorage.getItem('Authorization');
-    fetch("http://localhost:80/v1/officehours/?oh=" + this.state.id, {
+    fetch("https://tapalapi.patrickold.me/v1/officehours/?oh=" + this.state.id, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, cors, *same-origin
             headers: {
@@ -119,7 +119,7 @@ export default class OfficeHour extends Component {
             "update" : change
         }
         var auth = localStorage.getItem('Authorization');
-        fetch("http://localhost:80/v1/question/?qid="+qID, {
+        fetch("https://tapalapi.patrickold.me/v1/question/?qid="+qID, {
             method: "PATCH",
             mode: "cors", 
             headers: {
@@ -149,7 +149,7 @@ export default class OfficeHour extends Component {
         } else if (operation === "remove") {
             methodToUse = "DELETE"
         }
-        fetch("http://localhost:80/v1/question/?qid="+qID, {
+        fetch("https://tapalapi.patrickold.me/v1/question/?qid="+qID, {
             method: methodToUse,
             headers: {
                 "Authorization": auth,

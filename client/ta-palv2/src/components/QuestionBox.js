@@ -15,7 +15,7 @@ export default class QuestionBox extends Component {
     }
     var auth = localStorage.getItem('Authorization');
     console.log('this.props.id', this.props.id)
-    fetch("http://localhost:80/v1/officehours/?oh=" + this.props.id, {
+    fetch("https://tapalapi.patrickold.me/v1/officehours/?oh=" + this.props.id, {
             method: "POST",
             mode: "cors",
             headers: {

@@ -12,7 +12,7 @@ export default class EmailVerifyForm extends Component {
       var user = localStorage.getItem("User")
       var auth = localStorage.getItem("Authorization")
       console.log(auth, user)
-      fetch("http://localhost:80/v1/email", {
+      fetch("https://tapalapi.patrickold.me/v1/email", {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, cors, *same-origin
             headers: {
@@ -36,7 +36,7 @@ export default class EmailVerifyForm extends Component {
       var user = localStorage.getItem("User")
       var auth = localStorage.getItem("Authorization")
       console.log(auth, user)
-      fetch("http://localhost:80/v1/email/verify?c=" + this.state.code, {
+      fetch("https://tapalapi.patrickold.me/v1/email/verify?c=" + this.state.code, {
             method: "GET", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, cors, *same-origin
             headers: {
