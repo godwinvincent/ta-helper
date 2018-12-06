@@ -24,7 +24,7 @@ type ServiceEvent struct {
 
 //main is the main entry point for the server
 func main() {
-	addr := getenv("ADDR")
+	addr := ":80"
 	redisAddr := os.Getenv("REDISADDR")
 	if len(addr) == 0 {
 		addr = ":80"

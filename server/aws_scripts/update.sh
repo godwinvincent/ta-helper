@@ -38,8 +38,6 @@ docker run -d \
 -v /home/ec2-user/mongoData:/data/db \
 mongo
 
-docker run -p 27017:27017 -v /home/<user>/data:/data/db 
-
 # Run Redis
 docker run -d --name redis \
 --network ta-pal \
