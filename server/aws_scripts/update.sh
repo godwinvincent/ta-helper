@@ -1,6 +1,10 @@
+
+# source our secrets
+source creds.sh
+
+
 export ADDR=:80
 export REDISADDR=redis:6379
-export SESSIONKEY=testKey
 export MONGOADDR=mongo:27017
 export MONGODB=ta-pal
 export TLSCERT=/etc/letsencrypt/live/tapalapi.patrickold.me/fullchain.pem
@@ -29,7 +33,7 @@ rabbitmq:3
 docker run -d \
 --name mongo \
 --network ta-pal \
--v /home/ec2-user/mongoData:/data/db \ # delete if if Mongo not working
+-v /home/ec2-user/mongoData:/data/db \
 mongo
 
 docker run -p 27017:27017 -v /home/<user>/data:/data/db 
