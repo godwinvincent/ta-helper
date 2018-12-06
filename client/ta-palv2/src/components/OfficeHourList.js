@@ -82,7 +82,7 @@ export default class OfficeHourList extends Component {
   }
 
   handleData(data) {
-    var message = JSON.parse(Buffer.from(data, 'base64').toString('ascii'))
+    var message = Buffer.from(data, 'base64').toString('ascii')
     console.log(message)
     this.update();
   }
