@@ -1,5 +1,5 @@
 FROM alpine
 RUN apk add --no-cache ca-certificates
-COPY gateway /gateway
+COPY scheduling /scheduling
 EXPOSE 80
-ENTRYPOINT ["/gateway"]
+ENTRYPOINT ["/scheduling"]
