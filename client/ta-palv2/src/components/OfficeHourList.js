@@ -109,8 +109,8 @@ export default class OfficeHourList extends Component {
           <ListGroup aria-live="polite">
             {officeHoursItems}
           </ListGroup>
-          {/* <Websocket url={'wss://info441api.godwinv.com/v1/ws?auth=' + localStorage.getItem('Authorization')}
-              onMessage={this.handleData.bind(this)}/> */}
+          <Websocket url={'wss://tapalapi.patrickold.me/v1/ws?auth=' + localStorage.getItem('Authorization')}
+              onMessage={this.handleData.bind(this)}/>
         </div>))
   }
 }

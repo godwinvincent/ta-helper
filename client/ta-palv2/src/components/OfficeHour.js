@@ -173,6 +173,7 @@ export default class OfficeHour extends Component {
     }
 
     render() {
+        var userPull = JSON.parse(localStorage.getItem("User"))
         return ( this.props.currentUser ?
         (
             <div>
@@ -182,7 +183,8 @@ export default class OfficeHour extends Component {
                 changeQuestionOrder={(change, qID) => this.changeQuestionOrder(change, qID)} 
                 changeQuestionUsers={(qID, operation) => this.changeQuestionUsers(qID, operation)} 
                 sendNotification={(students) => this.sendNotification(students)} id={this.state.id} />
-                <QuestionBox currentUser={this.props.currentUser} id={this.state.id} />
+                { userPull.role == "student" ?
+                <QuestionBox currentUser={this.props.currentUser} id={this.state.id} /> : ""}
                 <Websocket url={'wss://info441api.godwinv.com/v1/ws?auth=' + localStorage.getItem('Authorization')}
               onquestion={this.handleData.bind(this)}/>
             </div>

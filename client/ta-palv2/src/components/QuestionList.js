@@ -73,6 +73,7 @@ class QuestionItem extends Component {
             <img className='arrow-buttons' src={window.location.origin + '/img/bell.jpg'} onClick={() => this.sendNotification()}></img>
             <img className='arrow-buttons' src={window.location.origin + '/img/down-arrow.png'} onClick={() => this.changeQuestionOrder('down')}></img>
             <img className='arrow-buttons' src={window.location.origin + '/img/up-arrow.png'} onClick={() => this.changeQuestionOrder('up')}></img>
+            <img className='arrow-buttons' src={window.location.origin + '/img/minus.svg'} onClick={() => this.changeQuestionUsers('remove')}></img>
             </span>
            : 
            <span>
@@ -85,6 +86,7 @@ class QuestionItem extends Component {
             }
           </div>
           <div className="question">{question.questBody}</div>
+          <div className="Student">{ "Student Count: " + question.students.length}</div>
         </div>
       </div>
     );

@@ -24,14 +24,16 @@ export default class Header extends React.Component {
 
   render() {
     let content = "";
+    var userPull = JSON.parse(localStorage.getItem("User"))
     if (this.props.showOptions) {
       content = (<Collapse isOpen={this.state.isOpen} navbar>
         <Nav className="ml-auto" navbar>
+        {userPull.role == "instructor" ?
           <NavItem>
             <NavLink>
               <ChannelModal mode="create" buttonName="New Office Hours" buttonCallback={this.props.newOfficeHourCallback} />
             </NavLink>
-          </NavItem>
+          </NavItem> : '' }
           <NavItem>
             <NavLink>
               <Button className="btn btn-warning" onClick={() => this.handleSignOut()}> Log Out </Button>
