@@ -102,7 +102,7 @@ func main() {
 	mux.Handle("/v1/officehours", handlers.EnsureAuth(ctx.OfficeHourHandler))
 	mux.Handle("/v1/officehours/", handlers.EnsureAuth(ctx.SpecificOfficeHourHandler))
 	mux.Handle("/v1/question/", handlers.EnsureAuth(ctx.SpecificQuestionHandler))
-	mux.Handle("/v1/ws/", handlers.EnsureAuth(ctx.WebSocketConnectionHandler))
+	mux.Handle("/v1/question/answer", handlers.EnsureAuth(ctx.WebSocketConnectionHandler))
 	log.Printf("server is listening at %s...", addr)
 	log.Fatal(http.ListenAndServe(addr, mux))
 }

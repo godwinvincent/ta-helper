@@ -288,7 +288,7 @@ func (ctx *Context) SpecificQuestionHandler(w http.ResponseWriter, r *http.Reque
 
 // WebSocketConnectionHandler :
 //	- Post: if instructor: notifies all students in a question that it is their turn
-//		Example: /v1/ws/?qid=<QuestionID>
+//		Example: /v1/question/answer?qid=<QuestionID>
 func (ctx *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Request, user *User) {
 	if r.Method == "POST" {
 
