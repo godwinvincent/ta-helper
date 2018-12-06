@@ -92,7 +92,7 @@ func (n *Notifier) Dispatch(userIDs []string, msg []byte) {
 
 func (ctx *Context) WebSocketConnectionHandler(w http.ResponseWriter, r *http.Request, currSession *SessionState) {
 	// TODO: change accepted origin URL when deploying to
-	if r.Header.Get("Origin") != "http://localhost:3000" {
+	if r.Header.Get("Origin") != "https://tapal.patrickold.me" {
 		http.Error(w, "Websocket Connection Refused, bad origin", 403)
 		log.Printf("websocket connection failed, bad origin: %s", r.Header.Get("Origin"))
 		return
