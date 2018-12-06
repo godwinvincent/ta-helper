@@ -187,7 +187,7 @@ export default class OfficeHour extends Component {
                 { userPull.role == "student" ?
                 <QuestionBox currentUser={this.props.currentUser} id={this.state.id} /> : ""}
                 <Websocket url={'wss://tapalapi.patrickold.me/v1/ws?auth=' + localStorage.getItem('Authorization')}
-              onquestion={this.handleData.bind(this)}/>
+              onMessage={this.handleData.bind(this)}/>
             </div>
         ) :
         <Redirect to="/"/>
