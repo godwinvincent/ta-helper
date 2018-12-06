@@ -8,10 +8,10 @@ export default class QuestionBox extends Component {
     this.state = {question:''};
   }
 
-  post(body) {
+  post(body, type) {
     var questionData = {
         "questBody": body,
-        "questType": "short"
+        "questType": type
     }
     var auth = localStorage.getItem('Authorization');
     console.log('this.props.id', this.props.id)
@@ -42,9 +42,9 @@ export default class QuestionBox extends Component {
     console.log("updating")
     this.setState({question: event.target.value});
   }
-  postQuestion(event){
+  postQuestion(event, type){
     event.preventDefault(); 
-    this.post(this.state.question)
+    this.post(this.state.question, type)
     this.setState({question:''}); 
   }
 
@@ -62,10 +62,15 @@ export default class QuestionBox extends Component {
               
               <div className="text-right">
                 <button className="btn btn-primary" 
-                  onClick={(e) => this.postQuestion(e)} 
+                  onClick={(e) => this.postQuestion(e, "short")} 
                   >
-                  <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Send
-                </button> 					
+                  <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Post Short Question
+                </button>
+                <button className="btn btn-primary m-2" 
+                  onClick={(e) => this.postQuestion(e, "long")} 
+                  >
+                  <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Post Long Question
+                </button> 					 					
               </div>
             </form>
           </div>

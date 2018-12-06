@@ -87,7 +87,8 @@ class QuestionItem extends Component {
             }
           </div>
           <div className="question">{question.questBody}</div>
-          <div className="Student">{ "Student Count: " + question.students.length}</div>
+          <div className="student">{ "Student Count: " + question.students.length}</div>
+          <div className="type">{ "Length: " + question.questType}</div>
         </div>
       </div>
     );
