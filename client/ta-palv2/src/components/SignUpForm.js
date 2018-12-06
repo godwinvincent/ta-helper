@@ -27,11 +27,19 @@ export default class SignUpForm extends Component {
       newState[event.target.name] = event.target.value;
       this.setState(newState);
     }
+
+    handleGoBack(event) {
+      event.preventDefault();
+      window.location = "/"
+    }
   
     /* SignUpForm#render() */
     render() {
         return (this.props.redirect ? <Redirect to="/" /> : (
-        <form>
+        <form style={{marginTop: '20px'}}>
+            <Button color="warning" style={{marginBottom: '10px'}} onClick={(e) => this.handleGoBack(e)} >
+              Back
+            </Button>
           {/* email */}
           <FormGroup>
             <Label for="email">UW NET ID</Label>
@@ -82,6 +90,5 @@ export default class SignUpForm extends Component {
             </Button>
           </FormGroup>
         </form>))
-      
     }
   }
