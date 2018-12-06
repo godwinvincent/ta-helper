@@ -27,10 +27,10 @@ func (ctx *Context) OfficeHourNotify(updateType string) error {
 	// make a slice of all usernames
 	allUsernames := make([]string, len(allUsers))
 	log.Printf("username count: %d", len(allUsernames))
-	for i := 0; i < len(allUsernames); i++ {
+	for i := 0; i < len(allUsernames)-1; i++ {
 		log.Printf("index: %d", i)
 		log.Printf(allUsers[i].UserName)
-		allUsernames = append(allUsernames, allUsers[i].UserName)
+		allUsernames[i] = allUsers[i].UserName
 	}
 
 	msg := models.WebsocketMsg{allUsernames, updateType}
