@@ -31,7 +31,7 @@ export default class EmailVerifyForm extends Component {
             // error.text().then(error => alert("error"))
         })
     }
-    handleVerify(event, clickedVerify){
+    handleVerify(event){
       event.preventDefault();
       var user = localStorage.getItem("User")
       var auth = localStorage.getItem("Authorization")
@@ -45,20 +45,25 @@ export default class EmailVerifyForm extends Component {
         })
         .then(response => {
             if (response.status < 300) {
-              if (clickedVerify) {
                 alert("email verified!, please log in again!")
-              }
-              localStorage.removeItem("Authorization")
-              localStorage.removeItem("User")
-              window.location.reload(); 
+                localStorage.removeItem("Authorization")
+                localStorage.removeItem("User")
+                window.location.reload(); 
             } else {
                 throw response
             }
         })
         .catch(function(error) {
-          console.log(error)
-            // error.text().then(error => alert("error"))
+            //error.text().then(error => alert("Error verifying"))
         })
+    }
+
+    handleGoHome(event) {
+      event.preventDefault();
+      localStorage.removeItem("Authorization");
+      localStorage.removeItem("User");
+      window.location.reload(); 
+      window.location = "/";
     }
 
     handleChange(event){
@@ -84,12 +89,12 @@ export default class EmailVerifyForm extends Component {
                 <Button color="primary" onClick={(e) => this.handleSend(e)} >
                   Send Email
                 </Button>
-                <Button color="warning" style={{float: 'right'}} onClick={(e) => this.handleVerify(e, false)} >
+                <Button color="warning" style={{float: 'right'}} onClick={(e) => this.handleGoHome(e)} >
                   Home
                 </Button>
               </FormGroup>
               <FormGroup>
-                <Button color="primary" onClick={(e) => this.handleVerify(e, true)} >
+                <Button color="primary" onClick={(e) => this.handleVerify(e)} >
                   Submit
                 </Button>
               </FormGroup>
