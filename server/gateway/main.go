@@ -38,7 +38,7 @@ func main() {
 		addr = ":80"
 	}
 
-	// ------------- Strucs -------------
+	// ------------- Structs -------------
 	redisdb := redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
 		Password: "", // no password set
@@ -119,7 +119,7 @@ func main() {
 	msgs, err := ch.Consume(
 		q.Name, // queue
 		"",     // consumer
-		false,  // auto-ack
+		true,   // auto-ack
 		false,  // exclusive
 		false,  // no-local
 		false,  // no-wait
@@ -143,7 +143,6 @@ func main() {
 			} else {
 				ctx.NotificationStore.Dispatch(tempMsg.Usernames, []byte(tempMsg.Event))
 			}
-			d.Ack(false)
 		}
 	}()
 

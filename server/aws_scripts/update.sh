@@ -5,6 +5,7 @@ export MONGOADDR=mongo:27017
 export MONGODB=ta-pal
 export TLSCERT=/etc/letsencrypt/live/tapalapi.patrickold.me/fullchain.pem
 export TLSKEY=/etc/letsencrypt/live/tapalapi.patrickold.me/privkey.pem
+export RABBITADDR=rabbit:5672
 
 docker rm -f gateway
 docker rm -f mongo
@@ -36,6 +37,8 @@ docker run -d --name redis \
 --network ta-pal \
 -p 6379:6379 \
 redis
+
+sleep 30
 
 # Run scheduling microservice
 docker run -d --name schedule \
