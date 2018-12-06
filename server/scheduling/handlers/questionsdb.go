@@ -76,7 +76,7 @@ func (ctx *Context) GetStudentsQuestion(questionID string) ([]string, error) {
 // that one of the questions was either deleted or updated.
 func (ctx *Context) QuestionNotify(officeHourID string, updateType string) error {
 	log.Println("notifying for question")
-	if updateType != "question-new" && updateType != "question-deleted" {
+	if updateType != "question-new" && updateType != "question-deleted" && updateType != "question-modified" {
 		return fmt.Errorf("error: updateType not supported in QuestionNotify(): %s", updateType)
 	}
 	usernames, err := ctx.OfficeHourGetAllStudents(officeHourID)
@@ -200,6 +200,13 @@ func (ctx *Context) QuestionAddStudent(questionID string, studentUsername string
 	if err2 != nil {
 		return err2
 	}
+	q, err := ctx.QuestionGetOne(questionID)
+	if err != nil {
+		return err
+	}
+	if err := ctx.QuestionNotify(q.OfficeHourID, "question-modified"); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -214,6 +221,13 @@ func (ctx *Context) QuestionRemStudent(questionID string, studentUsername string
 	// call delete on the question: it checks if no students are in it.
 	// if there are non then it deletes the question
 	ctx.QuestionDelete(questionID, "student")
+	q, err := ctx.QuestionGetOne(questionID)
+	if err != nil {
+		return err
+	}
+	if err := ctx.QuestionNotify(q.OfficeHourID, "question-modified"); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -252,6 +266,9 @@ func (ctx *Context) MoveQuestionUp(questionID string) error {
 		log.Println("failed in update 2")
 		return err
 	}
+	if err := ctx.QuestionNotify(q.OfficeHourID, "question-modified"); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -268,6 +285,9 @@ func (ctx *Context) MoveQuestionDown(questionID string) error {
 		return err
 	}
 	if err := ctx.QuestionCollection.Collection.Update(bson.M{"_id": bson.ObjectIdHex(questionID)}, bson.M{"$inc": bson.M{"questPos": 1}}); err != nil {
+		return err
+	}
+	if err := ctx.QuestionNotify(q.OfficeHourID, "question-modified"); err != nil {
 		return err
 	}
 	return nil
