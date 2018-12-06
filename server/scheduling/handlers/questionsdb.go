@@ -156,13 +156,15 @@ func (ctx *Context) QuestionDelete(questionID string, userRole string) error {
 		if err := ctx.IncrementOfficeHours(q.OfficeHourID, -1); err != nil {
 			return err
 		}
+		if err := ctx.QuestionNotify(q.OfficeHourID, "question-deleted"); err != nil {
+			return err
+		}
 
 	} else {
+		if err := ctx.QuestionNotify(q.OfficeHourID, "question-modified"); err != nil {
+			return err
+		}
 		return fmt.Errorf("can't delete due to role or students in question")
-	}
-
-	if err := ctx.QuestionNotify(q.OfficeHourID, "question-deleted"); err != nil {
-		return err
 	}
 
 	return nil
@@ -221,13 +223,6 @@ func (ctx *Context) QuestionRemStudent(questionID string, studentUsername string
 	// call delete on the question: it checks if no students are in it.
 	// if there are non then it deletes the question
 	ctx.QuestionDelete(questionID, "student")
-	q, err := ctx.QuestionGetOne(questionID)
-	if err != nil {
-		return err
-	}
-	if err := ctx.QuestionNotify(q.OfficeHourID, "question-modified"); err != nil {
-		return err
-	}
 
 	return nil
 }
