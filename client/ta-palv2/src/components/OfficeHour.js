@@ -165,7 +165,7 @@ export default class OfficeHour extends Component {
             }
         })
         .catch(function(error) {
-            error.text().then(error => this.setState({ errorquestion: error }))
+            error.text().then(error => console.log(error))
         })
     }
 

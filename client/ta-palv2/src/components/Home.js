@@ -48,80 +48,6 @@ export default class Home extends Component {
         })
     }
 
-    editChannel(id, channel, desc) {
-        var channelData = {
-            "name": channel,
-            "description": desc
-        }
-        var auth = localStorage.getItem('Authorization');
-        fetch("https://info441api.godwinv.com/v1/channels/"+id, {
-            method: "PATCH",
-            mode: "cors", 
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": auth
-            },
-            body: JSON.stringify(channelData), 
-        })
-        .then(response => {
-            if (response.status < 300) {
-                // this.setState({message:''}); 
-            } else {
-                throw response
-            }
-        })
-        .catch(function(error) {
-            error.text().then(error => this.setState({ errorMessage: error }))
-        })
-    }
-
-    editUserChannel(channelID, userID, add) {
-        var channelData = {
-            "userID": userID
-        }
-        var auth = localStorage.getItem('Authorization');
-        fetch("https://info441api.godwinv.com/v1/channels/"+ channelID + "/members", {
-            method: add ? "POST" : "DELETE",
-            mode: "cors", 
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": auth
-            },
-            body: JSON.stringify(channelData), 
-        })
-        .then(response => {
-            if (response.status < 300) {
-                // this.setState({message:''}); 
-            } else {
-                throw response
-            }
-        })
-        .catch(function(error) {
-            error.text().then(error => this.setState({ errorMessage: error }))
-        })
-    }
-
-    deleteChannel(channelID) {
-        var auth = localStorage.getItem('Authorization');
-        fetch("https://info441api.godwinv.com/v1/channels/"+ channelID, {
-            method: "DELETE",
-            mode: "cors", 
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": auth
-            }
-        })
-        .then(response => {
-            if (response.status < 300) {
-                // this.setState({message:''}); 
-            } else {
-                throw response
-            }
-        })
-        .catch(function(error) {
-            error.text().then(error => this.setState({ errorMessage: error }))
-        })
-    }
 
     render() {
         let content = "";
@@ -134,7 +60,7 @@ export default class Home extends Component {
             userPull.emailActivated ?
                 <div>
                     <Header newOfficeHourCallback={(name) => this.postNewOfficeHours(name)} signOutCallback={this.props.signOutCallback} showOptions={true} />
-                    <OfficeHourList deleteChannelCallback={(channelID) => this.deleteChannel(channelID)} editChannelUserCallback={(channelID, userID, add) => this.editUserChannel(channelID, userID, add)} editChannelCallback={(id, channel, desc) => this.editChannel(id, channel, desc)} user={this.props.user} ref={this.ref} path="channelsList/" redirect="/channels/" />
+                    <OfficeHourList user={this.props.user} ref={this.ref} path="channelsList/" redirect="/channels/" />
                 </div> 
                 : <EmailVerifyForm />
             :
