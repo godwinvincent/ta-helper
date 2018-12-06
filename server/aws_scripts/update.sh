@@ -16,9 +16,11 @@ docker rm -f mongo
 docker rm -f redis
 docker rm -f schedule
 docker rm -f rabbit
+docker rm -f email
 
 docker pull info441tapal/gateway
 docker pull info441tapal/schedule
+docker pull info441tapal/email
 
 docker network rm ta-pal
 docker network create ta-pal
@@ -53,6 +55,16 @@ docker run -d --name schedule \
 -e MONGODB=$MONGODB \
 -e RABBITADDR=$RABBITADDR \
 info441tapal/schedule
+
+# Run email microservice
+docker run -d --name email \
+--network ta-pal \
+-e REDISADDR=$REDISADDR \
+-e SESSIONKEY=$SESSIONKEY \
+-e MONGOADDR=$MONGOADDR \
+-e MONGODB=$MONGODB \
+-e SENDGRID_API_KEY=$SENDGRID_API_KEY \
+info441tapal/email
 
 # Run API gateway
 docker run -d --name gateway \
