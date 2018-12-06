@@ -75,6 +75,7 @@ func (ctx *Context) GetStudentsQuestion(questionID string) ([]string, error) {
 // QuestionNotify notifies all the students in an office hour session
 // that one of the questions was either deleted or updated.
 func (ctx *Context) QuestionNotify(officeHourID string, updateType string) error {
+	log.Println("notifying for question")
 	if updateType != "question-new" && updateType != "question-deleted" {
 		return fmt.Errorf("error: updateType not supported in QuestionNotify(): %s", updateType)
 	}
@@ -82,7 +83,7 @@ func (ctx *Context) QuestionNotify(officeHourID string, updateType string) error
 	if err != nil {
 		return err
 	}
-
+	log.Println(usernames)
 	msg := models.WebsocketMsg{usernames, updateType}
 	if err := ctx.WebSocketStore.SendNotifToRabbit(&msg); err != nil {
 		return fmt.Errorf("failed to notify students it's their questions turn %s", err)
