@@ -29,7 +29,10 @@ rabbitmq:3
 docker run -d \
 --name mongo \
 --network ta-pal \
+-v /home/ec2-user/mongoData:/data/db \ # delete if if Mongo not working
 mongo
+
+docker run -p 27017:27017 -v /home/<user>/data:/data/db 
 
 # Run Redis
 docker run -d --name redis \
