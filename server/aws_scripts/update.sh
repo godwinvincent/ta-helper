@@ -62,4 +62,5 @@ docker run -d --name gateway \
 -e TLSKEY=$TLSKEY \
 -v /etc/letsencrypt:/etc/letsencrypt:ro \
 -p 80:80 \
+-p 443:443 \
 info441tapal/gateway
