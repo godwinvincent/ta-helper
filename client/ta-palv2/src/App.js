@@ -27,7 +27,7 @@ class App extends Component {
         "lastName": lastName
     }
     console.log(jsonData)
-    fetch("http://localhost:80/v1/users", {
+    fetch("https://tapalapi.patrickold.me/v1/users", {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             mode: "cors", // no-cors, cors, *same-origin
             headers: {
@@ -54,7 +54,7 @@ class App extends Component {
           this.setState({ loading: false });
         })
         .catch(function(error) {
-          error.text().then(error => this.setState({ errorMessage: error }))
+          alert(error)
         })
 
   }
