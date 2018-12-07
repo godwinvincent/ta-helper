@@ -13,9 +13,12 @@ The goal of this project is to improve the efficiency of office hours that teach
  - An analytics view that allows TAs to analyze their past uses of the Teaching Assistant Pal application.
  - Real time updates of all views via websockets.
 ### Environment
-This application will be deployed via Docker containers on AWS. We will be utilizing GoLang for the API gateway and microservices, as well as Redis, MongoDB, and RabbitMQ to support the application. These can be seen below (a black box denotes a **container**:
+This application will be deployed via Docker containers on AWS. We will be utilizing GoLang for the API gateway and microservices, as well as Redis, MongoDB, and RabbitMQ to support the application, each of which will be in its own **container** on a docker network. These can be seen below:
 
-![Architecture Diagram](./images/Architecture.png)
+
+Checkout our network diagram at `/images/network2.png`
+![Architecture Diagram](./images/network2.png)
+
 ### User Stories 
 | No | Priority |  User | Description
 |--|--|--|--|
