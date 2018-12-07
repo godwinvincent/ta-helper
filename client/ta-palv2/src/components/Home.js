@@ -68,7 +68,7 @@ export default class Home extends Component {
                     <Row>
                         <Col sm="12" md={{ size: 8, offset: 2 }}>
                             <Card>
-                                <CardImg top width="300" height="400" src="img//tight.jpg" alt="Card image cap" />
+                                <CardImg top width="300" height="400" src="img//welcome.png" alt="Card image cap" />
                                 <CardBody>
                                     <CardTitle className="text-center">Welcome to TA-Pal!</CardTitle>
                                     <CardSubtitle className="text-center">Making Office Hours Better!</CardSubtitle>
