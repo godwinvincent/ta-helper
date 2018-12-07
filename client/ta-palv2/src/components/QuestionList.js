@@ -66,7 +66,7 @@ class QuestionItem extends Component {
     let user = JSON.parse(localStorage.getItem('User'));
     console.log(question)
     return (
-      <div className="row py-4 bg-white border">
+      <div className="row m-2 py-4 bg-white border">
         <div className="col pl-4 pl-lg-1">
           <div id='arrows'>
            {user.role == "instructor" ?
