@@ -1,4 +1,5 @@
-
+### About
+**scheduling** is responsible for managing `questions`, `office hours`, and `users`.
 
 ### Websocket notifications
 Gateway can expect to receive a marshaled Struc that contains an array of usernames affected by the event and a `event` string. 
