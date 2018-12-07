@@ -216,6 +216,13 @@ func (ctx *Context) QuestionAddStudent(questionID string, studentUsername string
 // Takes in a the ID of the question and the username
 // of the student that should be removed.
 func (ctx *Context) QuestionRemStudent(questionID string, studentUsername string) error {
+	q, err := ctx.QuestionGetOne(questionID)
+	if err != nil {
+		return err
+	}
+	if err := ctx.QuestionNotify(q.OfficeHourID, "question-modified"); err != nil {
+		return err
+	}
 	if err := ctx.QuestionCollection.Collection.Update(bson.M{"_id": bson.ObjectIdHex(questionID)}, bson.M{"$pull": bson.M{"students": studentUsername}}); err != nil {
 		return err
 	}
