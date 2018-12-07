@@ -146,7 +146,6 @@ class App extends Component {
   handleSignIn(email, password) {
     this.setState({ errorMessage: null });
     this.signin(email, password)
-
   }
 
   handleSignOut() {
@@ -158,7 +157,7 @@ class App extends Component {
   }
 
   render() {
-    let styles = {position:'fixed',left:0,bottom:0,width:'100%'};
+    let styles = {position:'fixed',left:0,bottom:0,width:'100%',marginLeft:'10px'};
     return(
         <div>
           <Router basename={process.env.PUBLIC_URL + '/'}>

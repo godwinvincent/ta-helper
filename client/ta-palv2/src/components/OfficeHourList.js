@@ -1,7 +1,8 @@
 import React, { Component } from 'react'; //import React Component
-import { ListGroup, ListGroupItem, Button} from 'reactstrap'
+import { ListGroup, ListGroupItem} from 'reactstrap'
 import { Redirect } from 'react-router-dom'
 import Websocket from 'react-websocket';
+import "./styles/Questions.css";
 
 
 
@@ -83,9 +84,9 @@ export default class OfficeHourList extends Component {
     var message = Buffer.from(data, 'base64').toString('ascii')
     console.log(message)
     this.update();
-    if(message == "question-yourTurn") {
+    if (message === "question-yourTurn") {
       alert("your question is being answered!")
-  }
+    }
   }
 
   render() {
@@ -129,15 +130,9 @@ class OfficeHourItem extends Component {
   render() {
     return (
       <ListGroupItem>
-        <span onClick={(e) => this.handleClick(this.props.officeHour)}>
+        <span id="oh-name" onClick={(e) => this.handleClick(this.props.officeHour)}>
         {this.props.officeHour.name + "   "}
         </span>
-        {/* {this.props.channel.creator.id === this.props.user.id ?
-              <span>
-              <Button color="danger" className="float-right" onClick={(e) => this.deleteChannelHandler()}>Delete</Button>
-              <ChannelModal mode="edit" channelID={this.props.channel.dbID} buttonName="Edit Channel" buttonCallback={this.props.editChannelCallback} /> {" "} 
-              <UserChanelModal channelID={this.props.channel.dbID} buttonCallback={this.props.editChannelUserCallback}></UserChanelModal>
-              </span> : ''} */}
       </ListGroupItem>
     );
   }

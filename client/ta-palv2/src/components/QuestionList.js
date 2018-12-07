@@ -1,8 +1,5 @@
 import React, { Component } from 'react'; //import React Component
-import Time from 'react-time'
 import './styles/Questions.css';
-import QuestionModal from './QuestionModal';
-import {Button} from 'reactstrap'
 
 
 export default class QuestionList extends Component {
@@ -69,19 +66,19 @@ class QuestionItem extends Component {
       <div className="row m-2 py-4 bg-white border">
         <div className="col pl-4 pl-lg-1">
           <div id='arrows'>
-           {user.role == "instructor" ?
+           {user.role === "instructor" ?
            <span>
-            <img className='arrow-buttons' src={window.location.origin + '/img/bell.jpg'} onClick={() => this.sendNotification()}></img>
-            <img className='arrow-buttons' src={window.location.origin + '/img/down-arrow.png'} onClick={() => this.changeQuestionOrder('down')}></img>
-            <img className='arrow-buttons' src={window.location.origin + '/img/up-arrow.png'} onClick={() => this.changeQuestionOrder('up')}></img>
-            <img className='arrow-buttons' src={window.location.origin + '/img/minus.svg'} onClick={() => this.changeQuestionUsers('remove')}></img>
+            <img alt="bell" className='arrow-buttons' src={window.location.origin + '/img/bell.jpg'} onClick={() => this.sendNotification()}></img>
+            <img alt="down" className='arrow-buttons' src={window.location.origin + '/img/down-arrow.png'} onClick={() => this.changeQuestionOrder('down')}></img>
+            <img alt="up" className='arrow-buttons' src={window.location.origin + '/img/up-arrow.png'} onClick={() => this.changeQuestionOrder('up')}></img>
+            <img alt="minus" className='arrow-buttons' src={window.location.origin + '/img/minus.svg'} onClick={() => this.changeQuestionUsers('remove')}></img>
             </span>
            : 
            <span>
              {question.students.includes(user.username) ? 
-             <img className='arrow-buttons' src={window.location.origin + '/img/minus.svg'} onClick={() => this.changeQuestionUsers('remove')}></img>
+             <img alt="minus2" className='arrow-buttons' src={window.location.origin + '/img/minus.svg'} onClick={() => this.changeQuestionUsers('remove')}></img>
             :
-            <img className='arrow-buttons' src={window.location.origin + '/img/plus.jpg'} onClick={() => this.changeQuestionUsers('add')}></img> 
+            <img alt="plus" className='arrow-buttons' src={window.location.origin + '/img/plus.jpg'} onClick={() => this.changeQuestionUsers('add')}></img> 
             }
             </span>
             }
