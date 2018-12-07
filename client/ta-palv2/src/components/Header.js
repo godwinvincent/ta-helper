@@ -28,6 +28,7 @@ export default class Header extends React.Component {
     if (this.props.showOptions) {
       content = (<Collapse isOpen={this.state.isOpen} navbar>
         <Nav className="ml-auto" navbar>
+        
         {userPull.role === "instructor" ?
           <NavItem>
             <NavLink>
@@ -46,7 +47,11 @@ export default class Header extends React.Component {
     return (
       <div>
         <Navbar color="faded" light expand="md">
-          <Link to='/'><NavbarBrand>TA-PAL</NavbarBrand></Link>
+          <Link to='/'>
+            <NavbarBrand>
+              TA-PAL
+            </NavbarBrand>
+          </Link>
           <NavbarToggler onClick={this.toggle} />
           {content}
         </Navbar>
