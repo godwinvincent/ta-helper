@@ -66,7 +66,7 @@ export default class OfficeHour extends Component {
         var question = Buffer.from(data, 'base64').toString('ascii')
         console.log(question)
         this.update();
-        if(question == "question-yourTurn") {
+        if(question === "question-yourTurn") {
             alert("your question is being answered!")
         }
       }
@@ -159,7 +159,7 @@ export default class OfficeHour extends Component {
                 changeQuestionOrder={(change, qID) => this.changeQuestionOrder(change, qID)} 
                 changeQuestionUsers={(qID, operation) => this.changeQuestionUsers(qID, operation)} 
                 sendNotification={(qID) => this.sendNotification(qID)} id={this.state.id} />
-                { userPull.role == "student" ?
+                { userPull.role === "student" ?
                 <QuestionBox currentUser={this.props.currentUser} id={this.state.id} /> : ""}
                 <Websocket url={'wss://tapalapi.patrickold.me/v1/ws?auth=' + localStorage.getItem('Authorization')}
               onMessage={this.handleData.bind(this)}/>

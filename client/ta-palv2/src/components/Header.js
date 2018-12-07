@@ -28,7 +28,7 @@ export default class Header extends React.Component {
     if (this.props.showOptions) {
       content = (<Collapse isOpen={this.state.isOpen} navbar>
         <Nav className="ml-auto" navbar>
-        {userPull.role == "instructor" ?
+        {userPull.role === "instructor" ?
           <NavItem>
             <NavLink>
               <ChannelModal mode="create" buttonName="New Office Hours" buttonCallback={this.props.newOfficeHourCallback} />

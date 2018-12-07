@@ -1,5 +1,5 @@
 import React, { Component } from 'react'; //import React Component
-import { ListGroup, ListGroupItem, Button} from 'reactstrap'
+import { ListGroup, ListGroupItem} from 'reactstrap'
 import { Redirect } from 'react-router-dom'
 import Websocket from 'react-websocket';
 
@@ -83,9 +83,9 @@ export default class OfficeHourList extends Component {
     var message = Buffer.from(data, 'base64').toString('ascii')
     console.log(message)
     this.update();
-    if(message == "question-yourTurn") {
+    if (message === "question-yourTurn") {
       alert("your question is being answered!")
-  }
+    }
   }
 
   render() {
