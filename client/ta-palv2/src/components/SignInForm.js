@@ -18,7 +18,8 @@ export default class SignInForm extends Component {
 
     handleGoBack(event) {
       event.preventDefault();
-      window.location = '/'
+      // window.location = '/'
+      this.setState({redirect : true})
     }
 
     // go back to home page
@@ -35,7 +36,7 @@ export default class SignInForm extends Component {
   
     /* SignUpForm#render() */
     render() {
-      return (this.props.redirect ? <Redirect to="/" /> :(
+      return (this.props.redirect || this.state.redirect  ? <Redirect to="/" /> :(
         <form style={{marginTop: '20px'}}>
           <Row id="email-row">
             <Col sm={{ size: 6, offset: 3 }}>

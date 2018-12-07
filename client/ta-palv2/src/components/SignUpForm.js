@@ -30,12 +30,13 @@ export default class SignUpForm extends Component {
 
     handleGoBack(event) {
       event.preventDefault();
-      window.location = "/"
+      // window.location = "/"
+      this.setState({redirect : true})
     }
   
     /* SignUpForm#render() */
     render() {
-        return (this.props.redirect ? <Redirect to="/" /> : (
+        return (this.props.redirect  || this.state.redirect ? <Redirect to="/" /> : (
         <form style={{marginTop: '20px'}}>
             <Button color="warning" style={{marginBottom: '10px'}} onClick={(e) => this.handleGoBack(e)} >
               Back
