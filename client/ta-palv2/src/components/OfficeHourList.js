@@ -102,15 +102,21 @@ export default class OfficeHourList extends Component {
       officeHoursItems = keyArray.map(each => <OfficeHourItem key={each.id} 
         user={this.state.user} deleteOfficeHourCallback={this.props.deleteOfficeHourCallback} 
         officeHourClicked={(id) => this.officeHourClickHandler(id)} officeHour={each} />)
-    }
+    } 
 
     return (this.state.redirect ?
       (<Redirect to={"/officeHour/" + this.state.clickedOfficeHour} push/>) :
       (
         <div className="container">
-          <ListGroup aria-live="polite">
+        <div class="row">
+        <div class="col"></div>
+        <div class="col-8"> <ListGroup aria-live="polite">
             {officeHoursItems}
-          </ListGroup>
+          </ListGroup></div>
+        <div class="col"></div>
+      </div>
+         
+
           <Websocket url={'wss://tapalapi.patrickold.me/v1/ws?auth=' + localStorage.getItem('Authorization')}
               onMessage={this.handleData.bind(this)}/>
         </div>))
@@ -129,10 +135,10 @@ class OfficeHourItem extends Component {
 
   render() {
     return (
-      <ListGroupItem>
-        <span id="oh-name" onClick={(e) => this.handleClick(this.props.officeHour)}>
+      <ListGroupItem className="rounded m-1">
+        <div id="oh-name" onClick={(e) => this.handleClick(this.props.officeHour)}>
         {this.props.officeHour.name + "   "}
-        </span>
+        </div>
       </ListGroupItem>
     );
   }

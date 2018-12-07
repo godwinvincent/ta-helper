@@ -52,28 +52,30 @@ export default class QuestionBox extends Component {
   render() {
     return (
       <div className="container">
-        <div className="row py-3 chirp-box">
-          <div className="col pl-4 pl-lg-1">
-            <form>
-              <textarea name="text" className="form-control mb-2" placeholder="Type Question Here" 
-                value={this.state.question} 
-                onChange={(e) => this.updateQuestion(e)}
-                />
-              
-              <div className="text-right">
-                <button className="btn btn-primary" 
-                  onClick={(e) => this.postQuestion(e, "short")} 
-                  >
-                  <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Post Short Question
-                </button>
-                <button className="btn btn-primary m-2" 
-                  onClick={(e) => this.postQuestion(e, "long")} 
-                  >
-                  <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Post Long Question
-                </button> 					 					
-              </div>
-            </form>
+        <div class="row">
+            <div class="col"></div>
+            <div className="col-8">
+              <form>
+                <textarea name="text" className="form-control mb-2 roundQuestion" placeholder="Type Question Here" 
+                  value={this.state.question} 
+                  onChange={(e) => this.updateQuestion(e)}
+                  />
+                
+                <div className="text-right">
+                  <button className="btn btn-primary" 
+                    onClick={(e) => this.postQuestion(e, "short")} 
+                    >
+                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Post Short Question
+                  </button>
+                  <button className="btn btn-primary m-2" 
+                    onClick={(e) => this.postQuestion(e, "long")} 
+                    >
+                    <i className="fa fa-pencil-square-o" aria-hidden="true"></i> Post Long Question
+                  </button> 					 					
+                </div>
+              </form>
           </div>
+          <div class="col"></div>
         </div>
       </div>
     );

@@ -32,7 +32,11 @@ export default class QuestionList extends Component {
     }
     return (
       <div aria-live="polite" className="container">
-          {questionItems}
+      <div class="row">
+        <div class="col"></div>
+        <div class="col-8">{questionItems}</div>
+        <div class="col"></div>
+      </div>
       </div>);
   }
 }
@@ -63,8 +67,8 @@ class QuestionItem extends Component {
     let user = JSON.parse(localStorage.getItem('User'));
     console.log(question)
     return (
-      <div className="row m-2 py-4 bg-white border">
-        <div className="col pl-4 pl-lg-1">
+      <div className="row m-2 py-4 bg-white border roundQuestion">
+        <div className="col pl-4 pl-lg-1 m-3">
           <div id='arrows'>
            {user.role === "instructor" ?
            <span>
@@ -83,6 +87,7 @@ class QuestionItem extends Component {
             </span>
             }
           </div>
+          {/* BEN change these below styles to match what you want */}
           <div className="question">{question.questBody}</div>
           <div className="student">{ "Student Count: " + question.students.length}</div>
           <div className="type">{ "Length: " + question.questType}</div>

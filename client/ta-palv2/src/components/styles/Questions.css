@@ -38,3 +38,8 @@ header button {
 #oh-name {
 	cursor: pointer;
 }
+
+.roundQuestion {
+	background: #D7D7D7;
+	border-radius: 15px !important
+}
