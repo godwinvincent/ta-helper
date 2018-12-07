@@ -15,10 +15,10 @@ export default class Home extends Component {
         };
     }
 
-    componentDidMount(){
+    componentDidMount() {
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
 
     }
 
@@ -29,48 +29,69 @@ export default class Home extends Component {
         var auth = localStorage.getItem('Authorization');
         fetch("https://tapalapi.patrickold.me/v1/officehours", {
             method: "POST",
-            mode: "cors", 
+            mode: "cors",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": auth
             },
-            body: JSON.stringify(officeHourData), 
+            body: JSON.stringify(officeHourData),
         })
-        .then(response => {
-            if (response.status < 300) {
-                // this.setState({message:''}); 
-            } else {
-                throw response
+            .then(response => {
+                if (response.status < 300) {
+                    // this.setState({message:''}); 
+                } else {
+                    throw response
+                }
+            })
+            .catch(function (error) {
+                error.text().then(error => console.log(error))
+            })
+    }
+
+    deleteOfficeHours(ohID) {
+        var auth = localStorage.getItem('Authorization');
+        fetch("https://tapalapi.patrickold.me/v1/officehours/?oh=" + ohID, {
+            method: "DELETE",
+            mode: "cors",
+            headers: {
+                "Authorization": auth
             }
         })
-        .catch(function(error) {
-            error.text().then(error => console.log(error))
-        })
+            .then(response => {
+                if (response.status < 300) {
+                    // success
+                } else {
+                    throw response
+                }
+            })
+            .catch(function (error) {
+                console.log(error)
+            })
     }
 
 
     render() {
         let content = "";
-        if(this.props.loading){
-             content = (<div className="text-center"><i className="fa fa-spinner fa-spin fa-3x" aria-label="Connecting..."></i></div>)
+        if (this.props.loading) {
+            content = (<div className="text-center"><i className="fa fa-spinner fa-spin fa-3x" aria-label="Connecting..."></i></div>)
         }
-        else{
+        else {
             var userPull = JSON.parse(localStorage.getItem("User"))
             content = this.props.user ?
-            userPull.emailActivated ?
-                <div>
-                    <Header newOfficeHourCallback={(name) => this.postNewOfficeHours(name)} signOutCallback={this.props.signOutCallback} showOptions={true} />
-                    <OfficeHourList user={this.props.user} ref={this.ref} path="channelsList/" redirect="/channels/" />
-                </div> 
-                : <EmailVerifyForm />
-            :
+                userPull.emailActivated ?
+                    <div>
+                        <Header newOfficeHourCallback={(name) => this.postNewOfficeHours(name)} signOutCallback={this.props.signOutCallback} showOptions={true} />
+                        <OfficeHourList deleteOfficeHourCallback={(id) => this.deleteOfficeHours(id)} user={this.props.user} ref={this.ref} path="channelsList/" redirect="/channels/" />
+                    </div>
+                    : <EmailVerifyForm />
+                :
                 (<Container>
                     <Row>
                         <Col sm="12" md={{ size: 8, offset: 2 }}>
                             <Card>
-                                <CardImg top width="300" height="400" src="img//tight.jpg" alt="Card image cap" />
+                                <CardImg className="img-responsive" top width="300" height="400" src="img//welcome.png" alt="Card image cap" />
                                 <CardBody>
-                                    <CardTitle className="text-center">Welcome to TA-Pal!</CardTitle>
+                                    <CardTitle className="text-center" style={{ fontWeight: "bold" }}>Welcome to TA-Pal!</CardTitle>
                                     <CardSubtitle className="text-center">Making Office Hours Better!</CardSubtitle>
                                     <CardText className="text-center">Please Log In or Sign up to get Started</CardText>
                                     <div className="text-center">

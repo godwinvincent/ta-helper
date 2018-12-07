@@ -154,7 +154,7 @@ export default class OfficeHour extends Component {
         return ( this.props.currentUser ?
         (
             <div>
-                <Header showOptions={false}/>
+                <Header showOptions={true} onlyLogout={true} signOutCallback={this.props.signOutCallback}/>
                 <QuestionList questions={this.state.questions} currentUser={this.props.currentUser} 
                 changeQuestionOrder={(change, qID) => this.changeQuestionOrder(change, qID)} 
                 changeQuestionUsers={(qID, operation) => this.changeQuestionUsers(qID, operation)} 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'; //import React Component
 import {FormGroup, Label, Input, Button, Row, Col } from 'reactstrap'
 import {Redirect} from 'react-router-dom'
+import './styles/Fields.css'
 
 export default class SignInForm extends Component {
     constructor(props){

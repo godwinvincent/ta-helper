@@ -36,7 +36,7 @@ export default class ChannelModal extends React.Component {
   render() {
     return (
       <span>
-        <Button className="float-right" onClick={this.toggle}> {this.props.buttonName}</Button>
+        <Button className="float-right btn-light" onClick={this.toggle}> {this.props.buttonName}</Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
           <ModalHeader toggle={this.toggle}>Create Office Hours</ModalHeader>
           <ModalBody>

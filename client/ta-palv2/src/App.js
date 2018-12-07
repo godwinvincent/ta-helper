@@ -185,7 +185,7 @@ class App extends Component {
               </div>
             )} />
             <Route path="/officeHour/:id" render={(routerProps) => (
-              <OfficeHour {...routerProps} currentUser={this.state.user} privateMessage={false} />
+              <OfficeHour {...routerProps} signOutCallback = {() => this.handleSignOut()} currentUser={this.state.user} privateMessage={false} />
             )} push/>
           </div>
         </Router>

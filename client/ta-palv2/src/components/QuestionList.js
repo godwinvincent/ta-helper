@@ -63,34 +63,52 @@ class QuestionItem extends Component {
 
 
   render() {
+
+
+    let styles = {
+      fontFamily: "Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+      fontStyle: "italic",
+      color: "#2B2B2B",
+      fontSize: "12px"
+    };
+
+
     let question = this.props.question;
     let user = JSON.parse(localStorage.getItem('User'));
     console.log(question)
     return (
       <div className="row m-2 py-4 bg-white border roundQuestion">
         <div className="col pl-4 pl-lg-1 m-3">
-          <div id='arrows'>
+          
+          {/* BEN change these below styles to match what you want */}
+          <div className="question">{question.questBody} </div>
+          <br/>
+          {user.role == "student" ? 
+          <span className="student" style = {styles}> { "Student Count: " + question.students.length} /  { "Length: " + question.questType}</span>
+          :
+          <span className="ta"  style = {styles}> { "Students: " + question.students} / { "Length: " + question.questType}</span>
+
+          }
+
+          {/* icons */}
+          <span id='arrows'>
            {user.role === "instructor" ?
            <span>
-            <img alt="bell" className='arrow-buttons' src={window.location.origin + '/img/bell.jpg'} onClick={() => this.sendNotification()}></img>
-            <img alt="down" className='arrow-buttons' src={window.location.origin + '/img/down-arrow.png'} onClick={() => this.changeQuestionOrder('down')}></img>
-            <img alt="up" className='arrow-buttons' src={window.location.origin + '/img/up-arrow.png'} onClick={() => this.changeQuestionOrder('up')}></img>
-            <img alt="minus" className='arrow-buttons' src={window.location.origin + '/img/minus.svg'} onClick={() => this.changeQuestionUsers('remove')}></img>
+            <img alt="bell" className='arrow-buttons' src={window.location.origin + '/img/bell.svg'} onClick={() => this.sendNotification()}></img>
+            <img alt="down" className='arrow-buttons' src={window.location.origin + '/img/down.svg'} onClick={() => this.changeQuestionOrder('down')}></img>
+            <img alt="up" className='arrow-buttons' src={window.location.origin + '/img/up.svg'} onClick={() => this.changeQuestionOrder('up')}></img>
+            <img alt="minus" className='arrow-buttons' src={window.location.origin + '/img/delete.svg'} onClick={() => this.changeQuestionUsers('remove')}></img>
             </span>
            : 
            <span>
              {question.students.includes(user.username) ? 
              <img alt="minus2" className='arrow-buttons' src={window.location.origin + '/img/minus.svg'} onClick={() => this.changeQuestionUsers('remove')}></img>
             :
-            <img alt="plus" className='arrow-buttons' src={window.location.origin + '/img/plus.jpg'} onClick={() => this.changeQuestionUsers('add')}></img> 
+            <img alt="plus" className='arrow-buttons' src={window.location.origin + '/img/add.svg'} onClick={() => this.changeQuestionUsers('add')}></img> 
             }
             </span>
             }
-          </div>
-          {/* BEN change these below styles to match what you want */}
-          <div className="question">{question.questBody}</div>
-          <div className="student">{ "Student Count: " + question.students.length}</div>
-          <div className="type">{ "Length: " + question.questType}</div>
+          </span>
         </div>
       </div>
     );

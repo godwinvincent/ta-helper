@@ -28,7 +28,7 @@ export default class Header extends React.Component {
     if (this.props.showOptions) {
       content = (<Collapse isOpen={this.state.isOpen} navbar>
         <Nav className="ml-auto" navbar>
-        {userPull.role === "instructor" ?
+        {userPull.role === "instructor" && !this.props.onlyLogout ?
           <NavItem>
             <NavLink>
               <ChannelModal mode="create" buttonName="New Office Hours" buttonCallback={this.props.newOfficeHourCallback} />
@@ -36,18 +36,23 @@ export default class Header extends React.Component {
           </NavItem> : '' }
           <NavItem>
             <NavLink>
-              <Button className="btn btn-warning" onClick={() => this.handleSignOut()}> Log Out </Button>
+              <Button className="btn btn-danger" onClick={() => this.handleSignOut()}> Log Out </Button>
             </NavLink>
           </NavItem>
         </Nav>
       </Collapse>)
     }
 
+    let styles = {
+      background: "#4b2e83",
+      marginBottom: "100px"
+    };
+
     return (
-      <div>
+      <div style = {styles}>
         <Navbar color="faded" light expand="md">
           <Link to='/'>
-            <NavbarBrand>
+            <NavbarBrand className="text-white">
               TA-PAL
             </NavbarBrand>
           </Link>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'; //import React Component
-import { ListGroup, ListGroupItem} from 'reactstrap'
+import { ListGroup, ListGroupItem } from 'reactstrap'
 import { Redirect } from 'react-router-dom'
 import Websocket from 'react-websocket';
 import "./styles/Questions.css";
@@ -21,53 +21,53 @@ export default class OfficeHourList extends Component {
   }
   componentDidMount() {
     var auth = localStorage.getItem('Authorization');
-    this.setState({user : JSON.parse(localStorage.getItem('User'))})
+    this.setState({ user: JSON.parse(localStorage.getItem('User')) })
     fetch("https://tapalapi.patrickold.me/v1/officehours", {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, cors, *same-origin
-            headers: {
-                "Authorization": auth
-            }
-        })
-        .then(response => {
-            if (response.status < 300) {
-                return response.json()
-            } else {
-                throw response
-            }
-        })
-        .then(response => {
-          this.setState({ officeHours: response });
-        })
-        .catch(function(error) {
-            localStorage.removeItem("Authorization")
-            error.text().then(error => alert("error"))
-        })
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, cors, *same-origin
+      headers: {
+        "Authorization": auth
+      }
+    })
+      .then(response => {
+        if (response.status < 300) {
+          return response.json()
+        } else {
+          throw response
+        }
+      })
+      .then(response => {
+        this.setState({ officeHours: response });
+      })
+      .catch(function (error) {
+        localStorage.removeItem("Authorization")
+        error.text().then(error => alert("error"))
+      })
   }
 
-  update(){
+  update() {
     var auth = localStorage.getItem('Authorization');
-    this.setState({user : JSON.parse(localStorage.getItem('User'))})
+    this.setState({ user: JSON.parse(localStorage.getItem('User')) })
     fetch("https://tapalapi.patrickold.me/v1/officehours", {
-            method: "GET", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, cors, *same-origin
-            headers: {
-                "Authorization": auth
-            }
-        })
-        .then(response => {
-            if (response.status < 300) {
-                return response.json()
-            } else {
-                throw response
-            }
-        })
-        .then(response => {
-          this.setState({ officeHours: response });
-        })
-        .catch(function(error) {
-            error.text().then(error => alert("error"))
-        })
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, cors, *same-origin
+      headers: {
+        "Authorization": auth
+      }
+    })
+      .then(response => {
+        if (response.status < 300) {
+          return response.json()
+        } else {
+          throw response
+        }
+      })
+      .then(response => {
+        this.setState({ officeHours: response });
+      })
+      .catch(function (error) {
+        error.text().then(error => alert("error"))
+      })
   }
 
   componentWillUnmount() {
@@ -94,31 +94,31 @@ export default class OfficeHourList extends Component {
     let officeHours = this.state.officeHours;
     if (officeHours) {
       let keyArray = Object.keys(officeHours).map(key => {
-        officeHours[key].dbID =  officeHours[key].id
+        officeHours[key].dbID = officeHours[key].id
         officeHours[key].id = key;
         return officeHours[key];
       });
       // keyArray.sort((a, b) => b.time - a.time);
-      officeHoursItems = keyArray.map(each => <OfficeHourItem key={each.id} 
-        user={this.state.user} deleteOfficeHourCallback={this.props.deleteOfficeHourCallback} 
+      officeHoursItems = keyArray.map(each => <OfficeHourItem key={each.id}
+        user={this.state.user} deleteOfficeHourCallback={this.props.deleteOfficeHourCallback}
         officeHourClicked={(id) => this.officeHourClickHandler(id)} officeHour={each} />)
-    } 
+    }
 
     return (this.state.redirect ?
-      (<Redirect to={"/officeHour/" + this.state.clickedOfficeHour} push/>) :
+      (<Redirect to={"/officeHour/" + this.state.clickedOfficeHour} push />) :
       (
         <div className="container">
-        <div class="row">
-        <div class="col"></div>
-        <div class="col-8"> <ListGroup aria-live="polite">
-            {officeHoursItems}
-          </ListGroup></div>
-        <div class="col"></div>
-      </div>
-         
+          <div class="row">
+            <div class="col"></div>
+            <div class="col-8"> <ListGroup aria-live="polite">
+              {officeHoursItems}
+            </ListGroup></div>
+            <div class="col"></div>
+          </div>
+
 
           <Websocket url={'wss://tapalapi.patrickold.me/v1/ws?auth=' + localStorage.getItem('Authorization')}
-              onMessage={this.handleData.bind(this)}/>
+            onMessage={this.handleData.bind(this)} />
         </div>))
   }
 }
@@ -129,15 +129,29 @@ class OfficeHourItem extends Component {
     this.props.officeHourClicked(officeHour.dbID)
   }
 
-  deleteChannelHandler(event) {
-    this.props.deleteChannelCallback(this.props.officeHour.dbID)
+  // deleteChannelHandler(event) {
+  //   this.props.deleteChannelCallback(this.props.officeHour.dbID)
+  // }
+
+  deleteOfficeHourHandler() {
+    this.props.deleteOfficeHourCallback(this.props.officeHour.dbID)
   }
 
   render() {
+    let user = JSON.parse(localStorage.getItem('User'));
+    console.log(this.props.officeHour)
     return (
       <ListGroupItem className="rounded m-1">
-        <div id="oh-name" onClick={(e) => this.handleClick(this.props.officeHour)}>
-        {this.props.officeHour.name + "   "}
+        <div id="oh-name" >
+          <span onClick={(e) => this.handleClick(this.props.officeHour)}>{this.props.officeHour.name + "   "}</span>
+          {this.props.officeHour.ta.includes(user.username) ?
+
+
+            <span id='arrows'>
+              <img alt="minus" className='arrow-buttons' src={window.location.origin + '/img/delete.svg'} onClick={() => this.deleteOfficeHourHandler()}></img>
+            </span>
+            :
+            ""}
         </div>
       </ListGroupItem>
     );
