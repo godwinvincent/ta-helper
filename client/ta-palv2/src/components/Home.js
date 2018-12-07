@@ -95,12 +95,12 @@ export default class Home extends Component {
                                     <CardSubtitle className="text-center">Making Office Hours Better!</CardSubtitle>
                                     <CardText className="text-center">Please Log In or Sign up to get Started</CardText>
                                     <div className="text-center">
-                                        <div>
-                                            <Link to="/login"><Button id='land-login'>Log In</Button></Link>
-                                        </div>
-                                        <div>
+                                        <span style={{marginRight: "1rem"}}>
+                                            <Link to="/login"><Button className="btn-primary" id='land-login'>Log In</Button></Link>
+                                        </span>
+                                        <span>
                                             <Link to="/join"><Button id='land-signup'>Sign Up</Button></Link>
-                                        </div>
+                                        </span>
                                     </div>
                                 </CardBody>
                             </Card>
