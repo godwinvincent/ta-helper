@@ -137,6 +137,7 @@ being requested, respond with a 401 status unauthorized.
                 - First name
                 - Last name
                 - Email
+                - Username
                 - Password
                 - Date and Time
         Response:

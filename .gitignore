@@ -8,6 +8,6 @@ server/.vscode/settings.json
 sendgrid.env
 dump.rdb
 server/.vscode/settings.json
-node_modules
+node_modules/
 *.pem
-
+build/
